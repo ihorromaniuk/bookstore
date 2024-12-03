@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: bookstore
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/bookstore?serverTimezone=UTC
+    username: book_user
+    password: book1234
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: true
