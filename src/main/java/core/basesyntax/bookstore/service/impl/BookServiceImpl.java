@@ -4,15 +4,13 @@ import core.basesyntax.bookstore.model.Book;
 import core.basesyntax.bookstore.repository.BookRepository;
 import core.basesyntax.bookstore.service.BookService;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+@RequiredArgsConstructor
 @Service
 public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
-
-    public BookServiceImpl(BookRepository bookRepository) {
-        this.bookRepository = bookRepository;
-    }
 
     @Override
     public Book save(Book book) {
@@ -24,3 +22,4 @@ public class BookServiceImpl implements BookService {
         return bookRepository.findAll();
     }
 }
+
