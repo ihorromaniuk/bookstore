@@ -1,7 +1,7 @@
 package core.basesyntax.bookstore;
 
-import core.basesyntax.bookstore.controller.BookController;
 import core.basesyntax.bookstore.model.Book;
+import core.basesyntax.bookstore.service.BookService;
 import java.math.BigDecimal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Bean;
 @SpringBootApplication
 public class BookstoreApplication {
     @Autowired
-    private BookController bookController;
+    private BookService bookService;
 
     public static void main(String[] args) {
         SpringApplication.run(BookstoreApplication.class, args);
@@ -39,9 +39,9 @@ public class BookstoreApplication {
                         "techno thriller",
                         "https://i.ebayimg.com/images/g/jRwAAOSwP~tW5EgU/s-l1200.jpg"
                 );
-                System.out.println(bookController.createBook(shining));
-                System.out.println(bookController.createBook(bot));
-                System.out.println(bookController.getAllBooks());
+                System.out.println(bookService.save(shining));
+                System.out.println(bookService.save(bot));
+                System.out.println(bookService.findAll());
             }
         };
     }
