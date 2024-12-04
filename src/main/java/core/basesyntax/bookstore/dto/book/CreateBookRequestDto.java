@@ -6,7 +6,10 @@ import java.math.BigDecimal;
 /**
  * DTO for {@link Book}
  */
-public record CreateBookRequestDto(String title, String author, String isbn,
-                                   BigDecimal price, String description,
+public record CreateBookRequestDto(String title,
+                                   String author,
+                                   String isbn,
+                                   BigDecimal price,
+                                   String description,
                                    String coverImage) {
 }
