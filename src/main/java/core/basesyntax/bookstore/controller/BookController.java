@@ -1,7 +1,9 @@
 package core.basesyntax.bookstore.controller;
 
+import core.basesyntax.bookstore.dto.book.BookDto;
 import core.basesyntax.bookstore.dto.book.CreateBookRequestDto;
 import core.basesyntax.bookstore.service.BookService;
+import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,6 +31,9 @@ public class BookController {
 
     @PostMapping
     public ResponseEntity<?> createBook(@RequestBody CreateBookRequestDto requestDto) {
-        return ResponseEntity.ok(bookService.save(requestDto));
+        BookDto responseBook = bookService.save(requestDto);
+        return ResponseEntity
+                .created(URI.create("books/" + responseBook.id()))
+                .body(responseBook);
     }
 }

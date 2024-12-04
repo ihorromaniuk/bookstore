@@ -39,8 +39,6 @@ public class BookstoreApplication {
                     "https://i.ebayimg.com/images/g/jRwAAOSwP~tW5EgU/s-l1200.jpg"
             );
 
-            System.out.println(bookService.save(shining));
-            System.out.println(bookService.save(bot));
             System.out.println(bookService.findAll());
         };
     }
