@@ -1,10 +1,13 @@
 package core.basesyntax.bookstore.service;
 
-import core.basesyntax.bookstore.model.Book;
+import core.basesyntax.bookstore.dto.book.BookDto;
+import core.basesyntax.bookstore.dto.book.CreateBookRequestDto;
 import java.util.List;
 
 public interface BookService {
-    Book save(Book book);
+    BookDto save(CreateBookRequestDto requestDto);
 
-    List<Book> findAll();
+    List<BookDto> findAll();
+
+    BookDto getById(Long id);
 }
