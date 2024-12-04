@@ -35,12 +35,11 @@ public class BookController {
     public ResponseEntity<?> createBook(@RequestBody CreateBookRequestDto requestDto,
                                         HttpServletRequest httpServletRequest) {
         BookDto responseBook = bookService.save(requestDto);
-        URI uri = URI.create(httpServletRequest.getRequestURL()
-                .append(PATH_SEPARATOR)
-                .append(responseBook.id())
-                .toString());
         return ResponseEntity
-                .created(uri)
+                .created(URI.create(httpServletRequest.getRequestURL()
+                        .append(PATH_SEPARATOR)
+                        .append(responseBook.id())
+                        .toString()))
                 .body(responseBook);
     }
 }
