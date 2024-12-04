@@ -21,21 +21,23 @@ public class BookstoreApplication {
     @Bean
     public CommandLineRunner commandLineRunner() {
         return args -> {
-            CreateBookRequestDto shining = new CreateBookRequestDto();
-            shining.setTitle("The Shining");
-            shining.setAuthor("Stephen King");
-            shining.setIsbn("9781444720723");
-            shining.setPrice(BigDecimal.valueOf(645));
-            shining.setDescription("spooky book");
-            shining.setCoverImage("https://m.media-amazon.com/images/I/81zqohMOk-L.jpg");
+            CreateBookRequestDto shining = new CreateBookRequestDto(
+                    "The Shining",
+                    "Stephen King",
+                    "9781444720723",
+                    BigDecimal.valueOf(645),
+                    "spooky book",
+                    "https://m.media-amazon.com/images/I/81zqohMOk-L.jpg"
+            );
 
-            CreateBookRequestDto bot = new CreateBookRequestDto();
-            bot.setTitle("Bot");
-            bot.setAuthor("Max Kidruk");
-            bot.setIsbn("9789661446532");
-            bot.setPrice(BigDecimal.valueOf(300));
-            bot.setDescription("techno thriller");
-            bot.setCoverImage("https://i.ebayimg.com/images/g/jRwAAOSwP~tW5EgU/s-l1200.jpg");
+            CreateBookRequestDto bot = new CreateBookRequestDto(
+                    "Bot",
+                    "Max Kidruk",
+                    "9789661446532",
+                    BigDecimal.valueOf(300),
+                    "techno thriller",
+                    "https://i.ebayimg.com/images/g/jRwAAOSwP~tW5EgU/s-l1200.jpg"
+            );
 
             System.out.println(bookService.save(shining));
             System.out.println(bookService.save(bot));
