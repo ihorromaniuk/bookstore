@@ -3,6 +3,7 @@ package core.basesyntax.bookstore.controller;
 import core.basesyntax.bookstore.dto.book.BookDto;
 import core.basesyntax.bookstore.dto.book.CreateBookRequestDto;
 import core.basesyntax.bookstore.service.BookService;
+import jakarta.servlet.http.HttpServletRequest;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/books")
 @RequiredArgsConstructor
 public class BookController {
+    private static final char PATH_SEPARATOR = '/';
     private final BookService bookService;
 
     @GetMapping
@@ -30,10 +32,15 @@ public class BookController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createBook(@RequestBody CreateBookRequestDto requestDto) {
+    public ResponseEntity<?> createBook(@RequestBody CreateBookRequestDto requestDto,
+                                        HttpServletRequest httpServletRequest) {
         BookDto responseBook = bookService.save(requestDto);
+        URI uri = URI.create(httpServletRequest.getRequestURL()
+                .append(PATH_SEPARATOR)
+                .append(responseBook.id())
+                .toString());
         return ResponseEntity
-                .created(URI.create("books/" + responseBook.id()))
+                .created(uri)
                 .body(responseBook);
     }
 }
