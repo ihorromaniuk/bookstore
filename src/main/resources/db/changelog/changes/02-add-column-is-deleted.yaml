@@ -1,0 +1,23 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-column-is_deleted
+      author: Ihor Romaniuk
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addColumn:
+            columns:
+              - column:
+                  name: is_deleted
+                  type: BIT
+                  valueBoolean: "false"
+            tableName: books
+  - changeSet:
+      id: add-not-null-constraint-is_deleted
+      author: Ihor Romaniuk
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addNotNullConstraint:
+            columnDataType: BIT
+            columnName: is_deleted
+            tableName: books
+
