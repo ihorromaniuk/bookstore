@@ -1,6 +1,7 @@
 package core.basesyntax.bookstore.controller;
 
 import core.basesyntax.bookstore.dto.book.BookDto;
+import core.basesyntax.bookstore.dto.book.BookParamsDto;
 import core.basesyntax.bookstore.dto.book.CreateBookRequestDto;
 import core.basesyntax.bookstore.dto.book.UpdateBookRequestDto;
 import core.basesyntax.bookstore.service.BookService;
@@ -32,6 +33,11 @@ public class BookController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getBookById(@PathVariable Long id) {
         return ResponseEntity.ok(bookService.getById(id));
+    }
+
+    @PostMapping("/filter")
+    public ResponseEntity<?> getBooksBySpec(@RequestBody BookParamsDto params) {
+        return ResponseEntity.ok(bookService.findAll(params));
     }
 
     @PostMapping
