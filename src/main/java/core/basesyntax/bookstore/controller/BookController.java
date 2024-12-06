@@ -39,8 +39,8 @@ public class BookController {
     }
 
     @PostMapping("/search")
-    public ResponseEntity<?> getBooksBySpec(@RequestBody BookParamsDto params) {
-        return ResponseEntity.ok(bookService.findAll(params));
+    public List<BookDto> getBooksBySpec(@RequestBody BookParamsDto params) {
+        return bookService.findAll(params);
     }
 
     @PostMapping
