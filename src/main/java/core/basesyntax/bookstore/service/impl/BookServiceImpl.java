@@ -2,8 +2,10 @@ package core.basesyntax.bookstore.service.impl;
 
 import core.basesyntax.bookstore.dto.book.BookDto;
 import core.basesyntax.bookstore.dto.book.CreateBookRequestDto;
+import core.basesyntax.bookstore.dto.book.UpdateBookRequestDto;
 import core.basesyntax.bookstore.exception.EntityNotFoundException;
 import core.basesyntax.bookstore.mapper.BookMapper;
+import core.basesyntax.bookstore.model.Book;
 import core.basesyntax.bookstore.repository.BookRepository;
 import core.basesyntax.bookstore.service.BookService;
 import java.util.List;
@@ -19,7 +21,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public BookDto save(CreateBookRequestDto requestDto) {
         return bookMapper.toDto(
-                bookRepository.save(bookMapper.toModel(requestDto))
+                bookRepository.save(bookMapper.createDtoToModel(requestDto))
         );
     }
 
@@ -34,6 +36,23 @@ public class BookServiceImpl implements BookService {
     public BookDto getById(Long id) {
         return bookMapper.toDto(bookRepository.findById(id).orElseThrow(() ->
                 new EntityNotFoundException("Can't find book by id. Id: " + id)));
+    }
+
+    @Override
+    public void delete(Long id) {
+        if (bookRepository.existsById(id)) {
+            bookRepository.deleteById(id);
+        } else {
+            throw new EntityNotFoundException("Can't find book by id to delete. Id: " + id);
+        }
+    }
+
+    @Override
+    public BookDto update(Long id, UpdateBookRequestDto requestDto) {
+        Book book = bookRepository.findById(id).orElseThrow(() ->
+                new EntityNotFoundException("Can't find book by id to update. Id: " + id));
+        bookMapper.updateBookFromDto(requestDto, book);
+        return bookMapper.toDto(bookRepository.save(book));
     }
 }
 

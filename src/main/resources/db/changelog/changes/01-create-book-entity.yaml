@@ -1,0 +1,58 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-book-entity
+      author: Ihor Romaniuk
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_books
+                  name: id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: title
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: author
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: isbn
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: price
+                  type: DECIMAL
+              - column:
+                  name: description
+                  type: VARCHAR(255)
+              - column:
+                  name: cover_image
+                  type: VARCHAR(255)
+              - column:
+                  name: is_deleted
+                  type: BIT
+                  constraints:
+                    nullable: false
+            tableName: books
+  - changeSet:
+      id: add-unique-constraint-isbn
+      author: Ihor Romaniuk
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addUniqueConstraint:
+            columnNames: isbn
+            constraintName: uc_books_isbn
+            tableName: books
+
