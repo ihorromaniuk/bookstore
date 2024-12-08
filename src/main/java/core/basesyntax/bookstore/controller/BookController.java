@@ -6,6 +6,7 @@ import core.basesyntax.bookstore.dto.book.CreateBookRequestDto;
 import core.basesyntax.bookstore.dto.book.UpdateBookRequestDto;
 import core.basesyntax.bookstore.service.BookService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -44,7 +45,7 @@ public class BookController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createBook(@RequestBody CreateBookRequestDto requestDto,
+    public ResponseEntity<?> createBook(@RequestBody @Valid CreateBookRequestDto requestDto,
                                         HttpServletRequest httpServletRequest) {
         BookDto responseBook = bookService.save(requestDto);
         return ResponseEntity
@@ -57,7 +58,7 @@ public class BookController {
 
     @PutMapping("/{id}")
     public BookDto updateBook(@PathVariable Long id,
-                              @RequestBody UpdateBookRequestDto requestDto) {
+                              @RequestBody @Valid UpdateBookRequestDto requestDto) {
         return bookService.update(id, requestDto);
     }
 
