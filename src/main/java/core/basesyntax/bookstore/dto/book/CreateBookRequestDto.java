@@ -5,8 +5,8 @@ import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 public record CreateBookRequestDto(@NotBlank String title,
-                                   @NotNull String author,
-                                   @NotNull String isbn,
+                                   @NotBlank String author,
+                                   @NotBlank String isbn,
                                    @NotNull BigDecimal price,
                                    String description,
                                    String coverImage) {
