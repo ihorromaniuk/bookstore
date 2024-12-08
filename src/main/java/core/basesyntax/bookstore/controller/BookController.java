@@ -41,8 +41,7 @@ public class BookController {
     @Operation(summary = "Get all books with pagination")
     @ApiResponse(
             responseCode = "200",
-            description = "Found books",
-            content = @Content(mediaType = "application/json")
+            description = "Found books with pagination"
     )
     @GetMapping
     public List<BookDto> getAllBooks(@ParameterObject Pageable pageable) {
