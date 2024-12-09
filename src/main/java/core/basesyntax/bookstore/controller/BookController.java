@@ -12,12 +12,13 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import java.net.URI;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +34,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/books")
+@Tag(name = "Books management",
+        description = "Endpoints for managing")
 @RequiredArgsConstructor
 public class BookController {
     private static final char PATH_SEPARATOR = '/';
@@ -44,7 +47,7 @@ public class BookController {
             description = "Found books with pagination"
     )
     @GetMapping
-    public List<BookDto> getAllBooks(@ParameterObject Pageable pageable) {
+    public Page<BookDto> getAllBooks(@ParameterObject Pageable pageable) {
         return bookService.findAll(pageable);
     }
 
@@ -73,7 +76,7 @@ public class BookController {
             content = @Content(mediaType = "application/json")
     )
     @PostMapping("/search")
-    public List<BookDto> getBooksBySpec(@RequestBody BookParamsDto params,
+    public Page<BookDto> getBooksBySpec(@RequestBody BookParamsDto params,
                                         @ParameterObject Pageable pageable) {
         return bookService.findAll(params, pageable);
     }
@@ -94,7 +97,7 @@ public class BookController {
             )
     })
     @PostMapping
-    public ResponseEntity<?> createBook(@RequestBody @Valid CreateBookRequestDto requestDto,
+    public ResponseEntity<BookDto> createBook(@RequestBody @Valid CreateBookRequestDto requestDto,
                                         HttpServletRequest httpServletRequest) {
         BookDto responseBook = bookService.save(requestDto);
         return ResponseEntity
