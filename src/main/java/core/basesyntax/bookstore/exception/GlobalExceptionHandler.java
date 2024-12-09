@@ -47,4 +47,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         }
         return error.getDefaultMessage();
     }
+
+    @ExceptionHandler(RegistrationException.class)
+    public ResponseEntity<ExceptionDto> handleRegistrationException(Exception ex) {
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        ExceptionDto exceptionDto = new ExceptionDto(status, ex.getMessage());
+        return new ResponseEntity<>(exceptionDto, status);
+    }
 }
