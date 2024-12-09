@@ -17,7 +17,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto save(UserRegistrationRequestDto requestDto) {
-        if (repository.findFirstByEmail(requestDto.email()).isPresent()) {
+        if (repository.existsByEmail(requestDto.email())) {
             throw new RegistrationException("Email already registered. "
                     + "Email: " + requestDto.email());
         }
