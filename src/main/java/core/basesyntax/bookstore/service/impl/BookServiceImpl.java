@@ -58,19 +58,20 @@ public class BookServiceImpl implements BookService {
     @Override
     public Page<BookDto> findAll(BookParamsDto params, Pageable pageable) {
         Specification<Book> spec = bookSpecificationBuilder.build(params);
-        List<BookDto> bookDtoList = bookRepository.findAll(spec, pageable)
+        Page<Book> page = bookRepository.findAll(spec, pageable);
+        List<BookDto> bookDtoList = page
                 .stream()
                 .map(bookMapper::toDto)
                 .toList();
-        return new PageImpl<>(bookDtoList, pageable, bookRepository.count(spec));
+        return new PageImpl<>(bookDtoList, pageable, page.getTotalElements());
     }
 
     @Override
     public Page<BookDto> findAll(Pageable pageable) {
-        List<BookDto> bookDtoList = bookRepository.findAll(pageable)
-                .stream()
+        Page<Book> page = bookRepository.findAll(pageable);
+        List<BookDto> bookDtoList = page.stream()
                 .map(bookMapper::toDto)
                 .toList();
-        return new PageImpl<>(bookDtoList, pageable, bookRepository.count());
+        return new PageImpl<>(bookDtoList, pageable, page.getTotalElements());
     }
 }
