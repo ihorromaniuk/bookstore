@@ -22,6 +22,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -46,6 +47,7 @@ public class BookController {
             responseCode = "200",
             description = "Found books with pagination"
     )
+    @PreAuthorize("hasRole('USER')")
     @GetMapping
     public Page<BookDto> getAllBooks(@ParameterObject Pageable pageable) {
         return bookService.findAll(pageable);
@@ -64,6 +66,7 @@ public class BookController {
                     content = @Content(schema = @Schema(implementation = ExceptionDto.class))
             )
     })
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("/{id}")
     public BookDto getBookById(@PathVariable Long id) {
         return bookService.getById(id);
@@ -75,6 +78,7 @@ public class BookController {
             description = "Found books",
             content = @Content(mediaType = "application/json")
     )
+    @PreAuthorize("hasRole('USER')")
     @PostMapping("/search")
     public Page<BookDto> getBooksBySpec(@RequestBody BookParamsDto params,
                                         @ParameterObject Pageable pageable) {
@@ -96,6 +100,7 @@ public class BookController {
                     ))
             )
     })
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<BookDto> createBook(@RequestBody @Valid CreateBookRequestDto requestDto,
                                         HttpServletRequest httpServletRequest) {
@@ -128,6 +133,7 @@ public class BookController {
                     content = @Content(schema = @Schema(implementation = ExceptionDto.class))
             )
     })
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public BookDto updateBook(@PathVariable Long id,
                               @RequestBody @Valid UpdateBookRequestDto requestDto) {
@@ -146,6 +152,7 @@ public class BookController {
                     content = @Content(schema = @Schema(implementation = ExceptionDto.class))
             )
     })
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteBook(@PathVariable Long id) {
