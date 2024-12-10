@@ -9,7 +9,6 @@ import core.basesyntax.bookstore.model.User;
 import core.basesyntax.bookstore.repository.user.RoleRepository;
 import core.basesyntax.bookstore.repository.user.UserRepository;
 import core.basesyntax.bookstore.service.UserService;
-import java.util.Optional;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -35,10 +34,5 @@ public class UserServiceImpl implements UserService {
         Role userRole = roleRepository.getFirstByRole(Role.RoleName.USER);
         user.setRoles(Set.of(userRole));
         return userMapper.toDto(userRepository.save(user));
-    }
-
-    @Override
-    public Optional<User> findByEmail(String email) {
-        return userRepository.findByEmail(email);
     }
 }
