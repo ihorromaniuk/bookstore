@@ -24,6 +24,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(exceptionDto, status);
     }
 
+    @ExceptionHandler(RegistrationException.class)
+    public ResponseEntity<ExceptionDto> handleRegistrationException(Exception ex) {
+        HttpStatus status = HttpStatus.CONFLICT;
+        ExceptionDto exceptionDto = new ExceptionDto(status, ex.getMessage());
+        return new ResponseEntity<>(exceptionDto, status);
+    }
+
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
             MethodArgumentNotValidException ex,
