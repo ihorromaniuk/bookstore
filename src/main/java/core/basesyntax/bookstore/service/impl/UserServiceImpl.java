@@ -2,6 +2,7 @@ package core.basesyntax.bookstore.service.impl;
 
 import core.basesyntax.bookstore.dto.user.UserDto;
 import core.basesyntax.bookstore.dto.user.UserRegistrationRequestDto;
+import core.basesyntax.bookstore.exception.EntityNotFoundException;
 import core.basesyntax.bookstore.exception.RegistrationException;
 import core.basesyntax.bookstore.mapper.UserMapper;
 import core.basesyntax.bookstore.model.Role;
@@ -31,7 +32,9 @@ public class UserServiceImpl implements UserService {
 
         User user = userMapper.toModel(requestDto);
         user.setPassword(passwordEncoder.encode(requestDto.password()));
-        Role userRole = roleRepository.getFirstByRole(Role.RoleName.USER);
+        Role userRole = roleRepository.findByName(Role.RoleName.USER).orElseThrow(() ->
+                new EntityNotFoundException("Can't find role by name. "
+                        + "Name: " + Role.RoleName.USER));
         user.setRoles(Set.of(userRole));
         return userMapper.toDto(userRepository.save(user));
     }

@@ -37,6 +37,11 @@ databaseChangeLog:
               - column:
                   name: shipping_address
                   type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: is_deleted
+                  type: BIT
             tableName: users
   - changeSet:
       id: create-users_roles-table
