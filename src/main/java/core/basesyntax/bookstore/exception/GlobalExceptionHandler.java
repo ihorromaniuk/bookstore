@@ -40,6 +40,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(exceptionDto, status);
     }
 
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<ExceptionDto> handleAuthenticationException(
+            AuthenticationException ex) {
+        HttpStatus status = HttpStatus.UNAUTHORIZED;
+        ExceptionDto exceptionDto = new ExceptionDto(status, ex.getMessage());
+        return new ResponseEntity<>(exceptionDto, status);
+    }
+
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
             MethodArgumentNotValidException ex,
