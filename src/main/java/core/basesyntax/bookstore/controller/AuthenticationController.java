@@ -2,7 +2,10 @@ package core.basesyntax.bookstore.controller;
 
 import core.basesyntax.bookstore.dto.book.ValidationExceptionDto;
 import core.basesyntax.bookstore.dto.user.UserDto;
+import core.basesyntax.bookstore.dto.user.UserLoginRequestDto;
+import core.basesyntax.bookstore.dto.user.UserLoginResponseDto;
 import core.basesyntax.bookstore.dto.user.UserRegistrationRequestDto;
+import core.basesyntax.bookstore.service.AuthenticationService;
 import core.basesyntax.bookstore.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -24,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AuthenticationController {
     private final UserService userService;
+    private final AuthenticationService authenticationService;
 
     @Operation(summary = "Register user")
     @ApiResponses({
@@ -43,5 +47,10 @@ public class AuthenticationController {
     @PostMapping("/registration")
     public UserDto register(@RequestBody @Valid UserRegistrationRequestDto requestDto) {
         return userService.save(requestDto);
+    }
+
+    @PostMapping("/login")
+    public UserLoginResponseDto login(@RequestBody @Valid UserLoginRequestDto requestDto) {
+        return authenticationService.authenticate(requestDto);
     }
 }
