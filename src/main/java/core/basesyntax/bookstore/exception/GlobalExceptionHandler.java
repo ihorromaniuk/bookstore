@@ -7,7 +7,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -28,14 +27,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(RegistrationException.class)
     public ResponseEntity<ExceptionDto> handleRegistrationException(Exception ex) {
         HttpStatus status = HttpStatus.CONFLICT;
-        ExceptionDto exceptionDto = new ExceptionDto(status, ex.getMessage());
-        return new ResponseEntity<>(exceptionDto, status);
-    }
-
-    @ExceptionHandler(AuthorizationDeniedException.class)
-    public ResponseEntity<ExceptionDto> handleAuthorizationDeniedException(
-            AuthorizationDeniedException ex) {
-        HttpStatus status = HttpStatus.FORBIDDEN;
         ExceptionDto exceptionDto = new ExceptionDto(status, ex.getMessage());
         return new ResponseEntity<>(exceptionDto, status);
     }
