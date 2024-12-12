@@ -49,6 +49,24 @@ public class AuthenticationController {
         return userService.save(requestDto);
     }
 
+    @Operation(summary = "Login user",
+            description = "Acquire JWT using email/password combination")
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Login user",
+                    content = @Content(
+                            schema = @Schema(implementation = UserLoginResponseDto.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Validation failed",
+                    content = @Content(schema = @Schema(
+                            implementation = ValidationExceptionDto.class
+                    ))
+            )
+    })
     @PostMapping("/login")
     public UserLoginResponseDto login(@RequestBody @Valid UserLoginRequestDto requestDto) {
         return authenticationService.authenticate(requestDto);
