@@ -15,4 +15,3 @@ databaseChangeLog:
       file: db/changelog/changes/07-create-books-categories-table.yml
   - include:
       file: db/changelog/changes/insert-mock-data.yml
-
