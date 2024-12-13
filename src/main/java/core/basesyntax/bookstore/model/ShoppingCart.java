@@ -23,9 +23,9 @@ public class ShoppingCart {
     private Long id;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @OneToMany(mappedBy = "shopping_cart")
+    @OneToMany(mappedBy = "shoppingCart")
     private Set<CartItem> cartItems;
 }

@@ -12,6 +12,7 @@ import jakarta.persistence.Table;
 import java.util.Collection;
 import java.util.Set;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
@@ -22,6 +23,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Setter
 @SQLDelete(sql = "UPDATE users SET is_deleted = true WHERE id=?")
 @SQLRestriction("is_deleted=false")
+@NoArgsConstructor
 @Entity
 @Table(name = "users")
 public class User implements UserDetails {
@@ -51,6 +53,10 @@ public class User implements UserDetails {
 
     @Column(nullable = false)
     private boolean isDeleted = false;
+
+    public User(Long id) {
+        this.id = id;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
