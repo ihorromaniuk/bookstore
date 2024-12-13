@@ -6,3 +6,7 @@ spring:
     password: password
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
+
+jwt:
+  expiration: 300000
+  secret: I'm_dreaming_of_a_white_Christmas_Just_like_the_ones_I_used_to_know

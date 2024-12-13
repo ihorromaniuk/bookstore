@@ -7,6 +7,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
@@ -19,14 +20,16 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<ExceptionDto> handleEntityNotFoundException(Exception ex) {
+    public ResponseEntity<ExceptionDto> handleEntityNotFoundException(
+            EntityNotFoundException ex) {
         HttpStatus status = HttpStatus.NOT_FOUND;
         ExceptionDto exceptionDto = new ExceptionDto(status, ex.getMessage());
         return new ResponseEntity<>(exceptionDto, status);
     }
 
     @ExceptionHandler(RegistrationException.class)
-    public ResponseEntity<ExceptionDto> handleRegistrationException(Exception ex) {
+    public ResponseEntity<ExceptionDto> handleRegistrationException(
+            RegistrationException ex) {
         HttpStatus status = HttpStatus.CONFLICT;
         ExceptionDto exceptionDto = new ExceptionDto(status, ex.getMessage());
         return new ResponseEntity<>(exceptionDto, status);
@@ -36,6 +39,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<ExceptionDto> handleAuthorizationDeniedException(
             AuthorizationDeniedException ex) {
         HttpStatus status = HttpStatus.FORBIDDEN;
+        ExceptionDto exceptionDto = new ExceptionDto(status, ex.getMessage());
+        return new ResponseEntity<>(exceptionDto, status);
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ExceptionDto> handleBadCredentialsException(
+            BadCredentialsException ex) {
+        HttpStatus status = HttpStatus.UNAUTHORIZED;
         ExceptionDto exceptionDto = new ExceptionDto(status, ex.getMessage());
         return new ResponseEntity<>(exceptionDto, status);
     }
