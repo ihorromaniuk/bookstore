@@ -1,11 +1,11 @@
 package core.basesyntax.bookstore.controller;
 
 import core.basesyntax.bookstore.dto.book.BookDto;
-import core.basesyntax.bookstore.dto.book.BookWithoutCategoryDto;
 import core.basesyntax.bookstore.dto.book.BookParamsDto;
+import core.basesyntax.bookstore.dto.book.BookWithoutCategoryDto;
 import core.basesyntax.bookstore.dto.book.CreateBookRequestDto;
-import core.basesyntax.bookstore.dto.exception.ExceptionDto;
 import core.basesyntax.bookstore.dto.book.UpdateBookRequestDto;
+import core.basesyntax.bookstore.dto.exception.ExceptionDto;
 import core.basesyntax.bookstore.dto.exception.ValidationExceptionDto;
 import core.basesyntax.bookstore.service.BookService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -37,7 +37,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/books")
 @Tag(name = "Books management",
-        description = "Endpoints for managing")
+        description = "Endpoints for managing books")
 @RequiredArgsConstructor
 public class BookController {
     private static final char PATH_SEPARATOR = '/';
@@ -143,11 +143,11 @@ public class BookController {
     @PutMapping("/{id}")
     public BookDto updateBook(@PathVariable Long id,
                               @RequestBody @Valid
-                                             UpdateBookRequestDto requestDto) {
+                              UpdateBookRequestDto requestDto) {
         return bookService.update(id, requestDto);
     }
 
-    @Operation(summary = "Update book")
+    @Operation(summary = "Delete book")
     @ApiResponses({
             @ApiResponse(
                     responseCode = "204",

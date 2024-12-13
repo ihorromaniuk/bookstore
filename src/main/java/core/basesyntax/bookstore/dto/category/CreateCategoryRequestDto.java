@@ -1,5 +1,7 @@
 package core.basesyntax.bookstore.dto.category;
 
-public record CreateCategoryRequestDto(String name,
+import jakarta.validation.constraints.NotBlank;
+
+public record CreateCategoryRequestDto(@NotBlank String name,
                                        String description) {
 }

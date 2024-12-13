@@ -10,7 +10,7 @@ databaseChangeLog:
                   constraints:
                     nullable: false
                     primaryKey: true
-                    primaryKeyName: pk_books
+                    primaryKeyName: pk_categories
                   name: id
                   type: BIGINT
               - column:
@@ -21,5 +21,9 @@ databaseChangeLog:
               - column:
                   name: description
                   type: VARCHAR(255)
+              - column:
+                  name: is_deleted
+                  type: BIT
+                  defaultValueBoolean: false
             tableName: categories
 

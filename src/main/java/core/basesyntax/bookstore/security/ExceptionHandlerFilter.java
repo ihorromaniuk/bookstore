@@ -34,7 +34,7 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
 
     public void setErrorResponse(HttpStatus status,
                                  HttpServletResponse response,
-                                 RuntimeException ex){
+                                 RuntimeException ex) {
         response.setStatus(status.value());
         response.setContentType("application/json");
         ExceptionDto dto = new ExceptionDto(status, ex.getMessage());
