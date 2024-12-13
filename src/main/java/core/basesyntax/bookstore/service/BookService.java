@@ -1,6 +1,7 @@
 package core.basesyntax.bookstore.service;
 
 import core.basesyntax.bookstore.dto.book.BookDto;
+import core.basesyntax.bookstore.dto.book.BookWithoutCategoryDto;
 import core.basesyntax.bookstore.dto.book.BookParamsDto;
 import core.basesyntax.bookstore.dto.book.CreateBookRequestDto;
 import core.basesyntax.bookstore.dto.book.UpdateBookRequestDto;
@@ -16,7 +17,7 @@ public interface BookService {
 
     BookDto update(Long id, UpdateBookRequestDto requestDto);
 
-    Page<BookDto> findAll(BookParamsDto params, Pageable pageable);
+    Page<BookWithoutCategoryDto> findAll(BookParamsDto params, Pageable pageable);
 
-    Page<BookDto> findAll(Pageable pageable);
+    Page<BookWithoutCategoryDto> findAll(Pageable pageable);
 }

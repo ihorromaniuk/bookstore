@@ -43,6 +43,7 @@ databaseChangeLog:
               - column:
                   name: is_deleted
                   type: BIT
+                  defaultValueBoolean: false
                   constraints:
                     nullable: false
             tableName: books

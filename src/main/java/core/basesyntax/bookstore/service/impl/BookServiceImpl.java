@@ -1,6 +1,7 @@
 package core.basesyntax.bookstore.service.impl;
 
 import core.basesyntax.bookstore.dto.book.BookDto;
+import core.basesyntax.bookstore.dto.book.BookWithoutCategoryDto;
 import core.basesyntax.bookstore.dto.book.BookParamsDto;
 import core.basesyntax.bookstore.dto.book.CreateBookRequestDto;
 import core.basesyntax.bookstore.dto.book.UpdateBookRequestDto;
@@ -56,22 +57,22 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Page<BookDto> findAll(BookParamsDto params, Pageable pageable) {
+    public Page<BookWithoutCategoryDto> findAll(BookParamsDto params, Pageable pageable) {
         Specification<Book> spec = bookSpecificationBuilder.build(params);
         Page<Book> page = bookRepository.findAll(spec, pageable);
-        List<BookDto> bookDtoList = page
+        List<BookWithoutCategoryDto> bookWithoutCategoryDtoList = page
                 .stream()
-                .map(bookMapper::toDto)
+                .map(bookMapper::toDtoWithoutCategory)
                 .toList();
-        return new PageImpl<>(bookDtoList, pageable, page.getTotalElements());
+        return new PageImpl<>(bookWithoutCategoryDtoList, pageable, page.getTotalElements());
     }
 
     @Override
-    public Page<BookDto> findAll(Pageable pageable) {
+    public Page<BookWithoutCategoryDto> findAll(Pageable pageable) {
         Page<Book> page = bookRepository.findAll(pageable);
-        List<BookDto> bookDtoList = page.stream()
-                .map(bookMapper::toDto)
+        List<BookWithoutCategoryDto> bookWithoutCategoryDtoList = page.stream()
+                .map(bookMapper::toDtoWithoutCategory)
                 .toList();
-        return new PageImpl<>(bookDtoList, pageable, page.getTotalElements());
+        return new PageImpl<>(bookWithoutCategoryDtoList, pageable, page.getTotalElements());
     }
 }

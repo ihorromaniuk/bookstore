@@ -1,6 +1,6 @@
 package core.basesyntax.bookstore.controller;
 
-import core.basesyntax.bookstore.dto.book.ValidationExceptionDto;
+import core.basesyntax.bookstore.dto.exception.ValidationExceptionDto;
 import core.basesyntax.bookstore.dto.user.UserDto;
 import core.basesyntax.bookstore.dto.user.UserLoginRequestDto;
 import core.basesyntax.bookstore.dto.user.UserLoginResponseDto;

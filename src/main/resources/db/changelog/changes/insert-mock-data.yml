@@ -1,0 +1,220 @@
+databaseChangeLog:
+  - changeSet:
+      id: insert-admin-user
+      author: Ihor Romaniuk
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: email
+                  value: 'bob@example.com'
+              - column:
+                  name: password
+                  value: '$2a$10$k7tKkxmHDQctpzDLaBPhouKsp87KjtUORmVsqa7Vhg.HRQ7ahlZRy'
+              - column:
+                  name: first_name
+                  value: 'Bob'
+              - column:
+                  name: last_name
+                  value: 'Alison'
+              - column:
+                  name: is_deleted
+                  valueBoolean: "false"
+        - insert:
+            tableName: users_roles
+            columns:
+              - column:
+                  name: user_id
+                  valueComputed: "(select id from users where email = 'bob@example.com')"
+              - column:
+                  name: role_id
+                  valueComputed: "(select id from roles where name = 'USER')"
+        - insert:
+            tableName: categories
+            columns:
+              - column:
+                  name: name
+                  value: "horror"
+              - column:
+                  name: description
+                  value: "spooky genre"
+        - insert:
+            tableName: categories
+            columns:
+              - column:
+                  name: name
+                  value: "thriller"
+              - column:
+                  name: description
+                  value: "intense genre"
+        - insert:
+            tableName: categories
+            columns:
+              - column:
+                  name: name
+                  value: "detective"
+              - column:
+                  name: description
+                  value: "detective genre"
+        - insert:
+            tableName: books
+            columns:
+              - column:
+                  name: title
+                  value: "Shining"
+              - column:
+                  name: author
+                  value: "Stephen King"
+              - column:
+                  name: isbn
+                  value: "9781444720723"
+              - column:
+                  name: price
+                  valueNumeric: "545.00"
+              - column:
+                  name: description
+                  value: "spooky book"
+              - column:
+                  name: cover_image
+                  value: "https://content2.rozetka.com.ua/goods/images/big/230033464.jpg"
+        - insert:
+            tableName: books_categories
+            columns:
+              - column:
+                  name: book_id
+                  valueComputed: "(select id from books where title = 'Shining')"
+              - column:
+                  name: category_id
+                  valueComputed: "(select id from categories where name = 'horror')"
+        - insert:
+            tableName: books
+            columns:
+              - column:
+                  name: title
+                  value: "Joyland"
+              - column:
+                  name: author
+                  value: "Stephen King"
+              - column:
+                  name: isbn
+                  value: "9781781162644"
+              - column:
+                  name: price
+                  valueNumeric: "450.00"
+              - column:
+                  name: description
+                  value: "spooky book about joyland"
+              - column:
+                  name: cover_image
+                  value: "https://m.media-amazon.com/images/I/81uVmogJ9EL._SL1500_.jpg"
+        - insert:
+            tableName: books_categories
+            columns:
+              - column:
+                  name: book_id
+                  valueComputed: "(select id from books where title = 'Joyland')"
+              - column:
+                  name: category_id
+                  valueComputed: "(select id from categories where name = 'horror')"
+        - insert:
+            tableName: books
+            columns:
+              - column:
+                  name: title
+                  value: "Mr. Mercedes"
+              - column:
+                  name: author
+                  value: "Stephen King"
+              - column:
+                  name: isbn
+                  value: "1501125605"
+              - column:
+                  name: price
+                  valueNumeric: "400.00"
+              - column:
+                  name: description
+                  value: "thrilling detective book"
+              - column:
+                  name: cover_image
+                  value: "https://m.media-amazon.com/images/I/91suL+10woL._SL1500_.jpg"
+        - insert:
+            tableName: books_categories
+            columns:
+              - column:
+                  name: book_id
+                  valueComputed: "(select id from books where title = 'Mr. Mercedes')"
+              - column:
+                  name: category_id
+                  valueComputed: "(select id from categories where name = 'detective')"
+        - insert:
+            tableName: books_categories
+            columns:
+              - column:
+                  name: book_id
+                  valueComputed: "(select id from books where title = 'Mr. Mercedes')"
+              - column:
+                  name: category_id
+                  valueComputed: "(select id from categories where name = 'thriller')"
+        - insert:
+            tableName: books
+            columns:
+              - column:
+                  name: title
+                  value: "Ne ozyraysya i movchy"
+              - column:
+                  name: author
+                  value: "Max Kidruk"
+              - column:
+                  name: isbn
+                  value: "6171238651"
+              - column:
+                  name: price
+                  valueNumeric: "400.00"
+              - column:
+                  name: description
+                  value: "thrilling book"
+              - column:
+                  name: cover_image
+                  value: "https://m.media-amazon.com/images/I/51H0toTbDPL.jpg"
+        - insert:
+            tableName: books_categories
+            columns:
+              - column:
+                  name: book_id
+                  valueComputed: "(select id from books where title = 'Ne ozyraysya i movchy')"
+              - column:
+                  name: category_id
+                  valueComputed: "(select id from categories where name = 'thriller')"
+        - insert:
+            tableName: books
+            columns:
+              - column:
+                  name: title
+                  value: "Tverdynja"
+              - column:
+                  name: author
+                  value: "Max Kidruk"
+              - column:
+                  name: isbn
+                  value: "9786171256101"
+              - column:
+                  name: price
+                  valueNumeric: "400.00"
+              - column:
+                  name: description
+                  value: "intense book"
+              - column:
+                  name: cover_image
+                  value: "https://content2.rozetka.com.ua/goods/images/big/14270427.jpg"
+        - insert:
+            tableName: books_categories
+            columns:
+              - column:
+                  name: book_id
+                  valueComputed: "(select id from books where title = 'Tverdynja')"
+              - column:
+                  name: category_id
+                  valueComputed: "(select id from categories where name = 'thriller')"
+

@@ -1,6 +1,7 @@
 package core.basesyntax.bookstore.dto.book;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public record BookDto(Long id,
                       String title,
@@ -8,5 +9,6 @@ public record BookDto(Long id,
                       String isbn,
                       BigDecimal price,
                       String description,
-                      String coverImage){
+                      String coverImage,
+                      List<Long> categoryIds) {
 }

@@ -2,6 +2,7 @@ package core.basesyntax.bookstore.config;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
+import core.basesyntax.bookstore.security.ExceptionHandlerFilter;
 import core.basesyntax.bookstore.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -24,6 +25,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
     private final UserDetailsService userDetailsService;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final ExceptionHandlerFilter exceptionHandlerFilter;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -48,6 +50,8 @@ public class SecurityConfig {
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthenticationFilter,
                         UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(exceptionHandlerFilter,
+                        JwtAuthenticationFilter.class)
                 .userDetailsService(userDetailsService)
                 .build();
     }

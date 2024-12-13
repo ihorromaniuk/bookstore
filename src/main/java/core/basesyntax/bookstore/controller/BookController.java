@@ -1,11 +1,12 @@
 package core.basesyntax.bookstore.controller;
 
 import core.basesyntax.bookstore.dto.book.BookDto;
+import core.basesyntax.bookstore.dto.book.BookWithoutCategoryDto;
 import core.basesyntax.bookstore.dto.book.BookParamsDto;
 import core.basesyntax.bookstore.dto.book.CreateBookRequestDto;
-import core.basesyntax.bookstore.dto.book.ExceptionDto;
+import core.basesyntax.bookstore.dto.exception.ExceptionDto;
 import core.basesyntax.bookstore.dto.book.UpdateBookRequestDto;
-import core.basesyntax.bookstore.dto.book.ValidationExceptionDto;
+import core.basesyntax.bookstore.dto.exception.ValidationExceptionDto;
 import core.basesyntax.bookstore.service.BookService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -49,7 +50,7 @@ public class BookController {
     )
     @PreAuthorize("hasRole('USER')")
     @GetMapping
-    public Page<BookDto> getAllBooks(@ParameterObject Pageable pageable) {
+    public Page<BookWithoutCategoryDto> getAllBooks(@ParameterObject Pageable pageable) {
         return bookService.findAll(pageable);
     }
 
@@ -80,8 +81,8 @@ public class BookController {
     )
     @PreAuthorize("hasRole('USER')")
     @PostMapping("/search")
-    public Page<BookDto> getBooksBySpec(@RequestBody BookParamsDto params,
-                                        @ParameterObject Pageable pageable) {
+    public Page<BookWithoutCategoryDto> getBooksBySpec(@RequestBody BookParamsDto params,
+                                                       @ParameterObject Pageable pageable) {
         return bookService.findAll(params, pageable);
     }
 
@@ -90,7 +91,9 @@ public class BookController {
             @ApiResponse(
                     responseCode = "201",
                     description = "Created new book",
-                    content = @Content(schema = @Schema(implementation = BookDto.class))
+                    content = @Content(schema = @Schema(
+                            implementation = BookDto.class)
+                    )
             ),
             @ApiResponse(
                     responseCode = "400",
@@ -102,8 +105,10 @@ public class BookController {
     })
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
-    public ResponseEntity<BookDto> createBook(@RequestBody @Valid CreateBookRequestDto requestDto,
-                                        HttpServletRequest httpServletRequest) {
+    public ResponseEntity<BookDto> createBook(
+            @RequestBody @Valid CreateBookRequestDto requestDto,
+            HttpServletRequest httpServletRequest
+    ) {
         BookDto responseBook = bookService.save(requestDto);
         return ResponseEntity
                 .created(URI.create(httpServletRequest.getRequestURL()
@@ -118,7 +123,8 @@ public class BookController {
             @ApiResponse(
                     responseCode = "200",
                     description = "Updated book",
-                    content = @Content(schema = @Schema(implementation = BookDto.class))
+                    content = @Content(schema =
+                    @Schema(implementation = BookDto.class))
             ),
             @ApiResponse(
                     responseCode = "400",
@@ -136,7 +142,8 @@ public class BookController {
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public BookDto updateBook(@PathVariable Long id,
-                              @RequestBody @Valid UpdateBookRequestDto requestDto) {
+                              @RequestBody @Valid
+                                             UpdateBookRequestDto requestDto) {
         return bookService.update(id, requestDto);
     }
 

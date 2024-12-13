@@ -13,5 +13,5 @@ spring:
     open-in-view: false
 
 jwt:
-  expiration: 300000
+  expiration: 3000000
   secret: Jingle_bells_jingle_bells__Jingle_all_the_way__Oh_what_fun_it_is_to_ride__In_a_one-horse_open_sleigh_hey

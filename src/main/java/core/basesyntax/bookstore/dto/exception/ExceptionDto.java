@@ -1,4 +1,4 @@
-package core.basesyntax.bookstore.dto.book;
+package core.basesyntax.bookstore.dto.exception;
 
 import java.time.LocalDateTime;
 import org.springframework.http.HttpStatus;
