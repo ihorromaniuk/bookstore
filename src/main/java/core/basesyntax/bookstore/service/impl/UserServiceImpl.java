@@ -6,7 +6,9 @@ import core.basesyntax.bookstore.exception.EntityNotFoundException;
 import core.basesyntax.bookstore.exception.RegistrationException;
 import core.basesyntax.bookstore.mapper.UserMapper;
 import core.basesyntax.bookstore.model.Role;
+import core.basesyntax.bookstore.model.ShoppingCart;
 import core.basesyntax.bookstore.model.User;
+import core.basesyntax.bookstore.repository.shoppingcart.ShoppingCartRepository;
 import core.basesyntax.bookstore.repository.user.RoleRepository;
 import core.basesyntax.bookstore.repository.user.UserRepository;
 import core.basesyntax.bookstore.service.UserService;
@@ -20,6 +22,7 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final ShoppingCartRepository shoppingCartRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
 
@@ -31,6 +34,11 @@ public class UserServiceImpl implements UserService {
         }
 
         User user = userMapper.toModel(requestDto);
+
+        ShoppingCart shoppingCart = new ShoppingCart();
+        shoppingCart.setUser(user);
+        shoppingCartRepository.save(shoppingCart);
+
         user.setPassword(passwordEncoder.encode(requestDto.password()));
         Role userRole = roleRepository.findByName(Role.RoleName.USER).orElseThrow(() ->
                 new EntityNotFoundException("Can't find role by name. "
