@@ -19,11 +19,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import java.net.URI;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -53,8 +53,9 @@ public class CategoryController {
     )
     @PreAuthorize("hasRole('USER')")
     @GetMapping
-    public List<CategoryDto> getAllCategories() {
-        return categoryService.findAll();
+    public Page<CategoryDto> getAllCategories(@ParameterObject @PageableDefault
+                                              Pageable pageable) {
+        return categoryService.findAll(pageable);
     }
 
     @Operation(summary = "Get category by id")
