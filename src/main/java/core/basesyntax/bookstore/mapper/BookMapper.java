@@ -32,9 +32,7 @@ public interface BookMapper {
 
     @Named("setCategoryIds")
     default List<Long> setCategoryIds(Set<Category> categories) {
-        return categories == null
-                ? new ArrayList<>()
-                : categories.stream()
+        return categories.stream()
                 .map(Category::getId)
                 .toList();
     }
