@@ -1,4 +1,4 @@
-package core.basesyntax.bookstore.repository.cartitem;
+package core.basesyntax.bookstore.repository.cart;
 
 import core.basesyntax.bookstore.model.CartItem;
 import core.basesyntax.bookstore.model.ShoppingCart;
