@@ -9,7 +9,6 @@ import core.basesyntax.bookstore.dto.cart.UpdateCartItemQuantityRequestDto;
 import core.basesyntax.bookstore.model.Book;
 import core.basesyntax.bookstore.model.CartItem;
 import core.basesyntax.bookstore.model.ShoppingCart;
-import core.basesyntax.bookstore.model.User;
 import java.util.List;
 import java.util.Set;
 import org.mapstruct.Mapper;
@@ -27,31 +26,16 @@ public interface CartMapper {
         return new Book(bookId);
     }
 
-    @Mapping(target = "bookId", source = "book", qualifiedByName = "setBookId")
-    @Mapping(target = "bookTitle", source = "book", qualifiedByName = "setBookTitle")
+    @Mapping(target = "bookId", source = "book.id")
+    @Mapping(target = "bookTitle", source = "book.title")
     CartItemDto toCartItemDto(CartItem cartItem);
 
-    @Mapping(target = "bookId", source = "book", qualifiedByName = "setBookId")
+    @Mapping(target = "bookId", source = "book.id")
     CartItemWithoutBookDto toCartItemWithoutDto(CartItem cartItem);
 
-    @Named("setBookId")
-    default Long setBookId(Book book) {
-        return book.getId();
-    }
-
-    @Named("setBookTitle")
-    default String setBookTitle(Book book) {
-        return book.getTitle();
-    }
-
-    @Mapping(target = "userId", source = "user", qualifiedByName = "setUserId")
+    @Mapping(target = "userId", source = "user.id")
     @Mapping(target = "cartItems", source = "cartItems", qualifiedByName = "setShoppingCarts")
     ShoppingCartDto toShoppingCartDto(ShoppingCart shoppingCart);
-
-    @Named("setUserId")
-    default Long setUserId(User user) {
-        return user.getId();
-    }
 
     @Named("setShoppingCarts")
     default List<CartItemDto> setShoppingCarts(Set<CartItem> cartItems) {

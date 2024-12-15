@@ -9,6 +9,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface CartItemRepository extends JpaRepository<CartItem, Long> {
     boolean existsByIdAndShoppingCart(Long id, ShoppingCart shoppingCart);
 
-    @EntityGraph(attributePaths = {"book"})
+    @EntityGraph(attributePaths = "book")
     Optional<CartItem> findByIdAndShoppingCart(Long id, ShoppingCart shoppingCart);
 }

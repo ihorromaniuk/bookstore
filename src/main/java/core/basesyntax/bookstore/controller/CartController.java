@@ -33,12 +33,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/cart")
 @Tag(name = "Shopping cart management",
-        description = "Endpoints to manage shopping for currently logged in user")
+        description = "Endpoints to manage shopping cart for currently logged in user")
 @RequiredArgsConstructor
 public class CartController {
     private final CartService cartService;
 
-    @Operation(summary = "Get shopping cart with items")
+    @Operation(summary = "Get shopping cart")
     @ApiResponse(
             responseCode = "200",
             description = "Receive shopping cart info and its' items"
