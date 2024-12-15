@@ -7,7 +7,6 @@ import core.basesyntax.bookstore.dto.cart.ShoppingCartDto;
 import core.basesyntax.bookstore.dto.cart.UpdateCartItemQuantityRequestDto;
 import core.basesyntax.bookstore.model.User;
 import core.basesyntax.bookstore.service.CartService;
-import java.security.Principal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -30,14 +29,15 @@ public class CartController {
 
     @PreAuthorize("hasRole('USER')")
     @GetMapping
-    public ShoppingCartDto getShoppingCart(Authentication authentication, Principal principal) {
+    public ShoppingCartDto getShoppingCart(Authentication authentication) {
         User user = (User) authentication.getPrincipal();
         return cartService.getShoppingCart(user);
     }
 
     @PreAuthorize("hasRole('USER')")
     @PostMapping
-    public CartItemWithoutBookDto addItemToShoppingCart(@RequestBody AddCardItemRequestDto requestDto,
+    public CartItemWithoutBookDto addItemToShoppingCart(@RequestBody
+                                                            AddCardItemRequestDto requestDto,
                                                         Authentication authentication) {
         User user = (User) authentication.getPrincipal();
         return cartService.addItemToCart(requestDto, user);

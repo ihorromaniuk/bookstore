@@ -12,7 +12,8 @@ public interface CartService {
 
     CartItemWithoutBookDto addItemToCart(AddCardItemRequestDto requestDto, User user);
 
-    CartItemDto updateCartQuantity(Long cartItemId, UpdateCartItemQuantityRequestDto requestDto, User user);
+    CartItemDto updateCartQuantity(Long cartItemId,
+                                   UpdateCartItemQuantityRequestDto requestDto, User user);
 
     void deleteCartItem(Long cartItemId, User user);
 }
