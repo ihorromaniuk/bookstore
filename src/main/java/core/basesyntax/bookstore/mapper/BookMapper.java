@@ -7,7 +7,6 @@ import core.basesyntax.bookstore.dto.book.CreateBookRequestDto;
 import core.basesyntax.bookstore.dto.book.UpdateBookRequestDto;
 import core.basesyntax.bookstore.model.Book;
 import core.basesyntax.bookstore.model.Category;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
