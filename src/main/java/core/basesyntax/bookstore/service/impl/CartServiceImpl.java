@@ -10,7 +10,7 @@ import core.basesyntax.bookstore.mapper.CartMapper;
 import core.basesyntax.bookstore.model.CartItem;
 import core.basesyntax.bookstore.model.ShoppingCart;
 import core.basesyntax.bookstore.model.User;
-import core.basesyntax.bookstore.repository.cartitem.CartItemRepository;
+import core.basesyntax.bookstore.repository.shoppingcart.CartItemRepository;
 import core.basesyntax.bookstore.repository.shoppingcart.ShoppingCartRepository;
 import core.basesyntax.bookstore.service.BookService;
 import core.basesyntax.bookstore.service.CartService;
