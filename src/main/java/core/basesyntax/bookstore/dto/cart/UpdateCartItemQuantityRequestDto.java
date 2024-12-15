@@ -1,4 +1,6 @@
 package core.basesyntax.bookstore.dto.cart;
 
-public record UpdateCartItemQuantityRequestDto(int quantity) {
+import jakarta.validation.constraints.Min;
+
+public record UpdateCartItemQuantityRequestDto(@Min(1) int quantity) {
 }

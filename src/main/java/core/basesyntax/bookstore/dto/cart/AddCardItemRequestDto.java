@@ -1,5 +1,8 @@
 package core.basesyntax.bookstore.dto.cart;
 
-public record AddCardItemRequestDto(Long bookId,
-                                    int quantity) {
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+
+public record AddCardItemRequestDto(@NotNull Long bookId,
+                                    @Min(1) int quantity) {
 }

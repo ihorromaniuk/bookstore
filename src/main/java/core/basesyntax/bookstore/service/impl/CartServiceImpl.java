@@ -12,6 +12,7 @@ import core.basesyntax.bookstore.model.ShoppingCart;
 import core.basesyntax.bookstore.model.User;
 import core.basesyntax.bookstore.repository.cartitem.CartItemRepository;
 import core.basesyntax.bookstore.repository.shoppingcart.ShoppingCartRepository;
+import core.basesyntax.bookstore.service.BookService;
 import core.basesyntax.bookstore.service.CartService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,7 @@ public class CartServiceImpl implements CartService {
     private final ShoppingCartRepository shoppingCartRepository;
     private final CartItemRepository cartItemRepository;
     private final CartMapper cartMapper;
+    private final BookService bookService;
 
     @Override
     public ShoppingCartDto getShoppingCart(User user) {
@@ -30,6 +32,10 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public CartItemWithoutBookDto addItemToCart(AddCardItemRequestDto requestDto, User user) {
+        if (!bookService.existsById(requestDto.bookId())) {
+            throw new EntityNotFoundException("Can't find book by id. "
+                    + "Id: " + requestDto.bookId());
+        }
         CartItem item = cartMapper.toModel(requestDto);
         item.setShoppingCart(shoppingCartRepository.getByUser(user));
         return cartMapper.toCartItemWithoutDto(cartItemRepository.save(item));
