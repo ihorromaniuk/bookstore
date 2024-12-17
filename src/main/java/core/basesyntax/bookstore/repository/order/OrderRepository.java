@@ -1,6 +1,5 @@
 package core.basesyntax.bookstore.repository.order;
 
-import core.basesyntax.bookstore.dto.order.OrderDto;
 import core.basesyntax.bookstore.model.Order;
 import core.basesyntax.bookstore.model.User;
 import java.util.Optional;
