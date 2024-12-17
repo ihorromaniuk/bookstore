@@ -30,10 +30,10 @@ public interface BookMapper {
     BookDto toDto(Book book);
 
     @Named("setCategoryIds")
-    default List<Long> setCategoryIds(Set<Category> categories) {
+    default Set<Long> setCategoryIds(Set<Category> categories) {
         return categories.stream()
                 .map(Category::getId)
-                .toList();
+                .collect(Collectors.toSet());
     }
 
     @Named("setCategories")

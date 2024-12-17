@@ -8,10 +8,8 @@ import core.basesyntax.bookstore.mapper.CategoryMapper;
 import core.basesyntax.bookstore.model.Category;
 import core.basesyntax.bookstore.repository.category.CategoryRepository;
 import core.basesyntax.bookstore.service.CategoryService;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -23,11 +21,8 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Page<CategoryDto> findAll(Pageable pageable) {
-        Page<Category> categories = categoryRepository.findAll(pageable);
-        List<CategoryDto> categoryDtos = categories.stream()
-                .map(categoryMapper::toDto)
-                .toList();
-        return new PageImpl<>(categoryDtos, pageable, categories.getTotalElements());
+        return categoryRepository.findAll(pageable)
+                .map(categoryMapper::toDto);
     }
 
     @Override
@@ -56,8 +51,7 @@ public class CategoryServiceImpl implements CategoryService {
     public void deleteById(Long id) {
         if (categoryRepository.existsById(id)) {
             categoryRepository.deleteById(id);
-        } else {
-            throw new EntityNotFoundException("Can't find category by id. Id: " + id);
         }
+        throw new EntityNotFoundException("Can't find category by id. Id: " + id);
     }
 }
