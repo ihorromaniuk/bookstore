@@ -2,6 +2,7 @@ databaseChangeLog:
   - changeSet:
       id: insert-admin-user
       author: Ihor Romaniuk
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - insert:
             tableName: users
