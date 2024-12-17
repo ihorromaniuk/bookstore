@@ -1,0 +1,22 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-books-categories-table
+      author: Ihor Romaniuk
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_books_categories
+                  name: book_id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_books_categories
+                  name: category_id
+                  type: BIGINT
+            tableName: books_categories
