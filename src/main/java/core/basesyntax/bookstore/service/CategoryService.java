@@ -3,10 +3,11 @@ package core.basesyntax.bookstore.service;
 import core.basesyntax.bookstore.dto.category.CategoryDto;
 import core.basesyntax.bookstore.dto.category.CreateCategoryRequestDto;
 import core.basesyntax.bookstore.dto.category.UpdateCategoryRequestDto;
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface CategoryService {
-    List<CategoryDto> findAll();
+    Page<CategoryDto> findAll(Pageable pageable);
 
     CategoryDto getById(Long id);
 
