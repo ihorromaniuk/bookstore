@@ -2,7 +2,6 @@ databaseChangeLog:
   - changeSet:
       id: create-cart-items-table
       author: Ihor Romaniuk
-      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - createTable:
             columns:
@@ -33,7 +32,6 @@ databaseChangeLog:
   - changeSet:
       id: add-foreign-key-cart-items-on-book
       author: Ihor Romaniuk
-      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - addForeignKeyConstraint:
             baseColumnNames: book_id
@@ -44,7 +42,6 @@ databaseChangeLog:
   - changeSet:
       id: add-foreign-key-cart-items-on-shopping-cart
       author: Ihor Romaniuk
-      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - addForeignKeyConstraint:
             baseColumnNames: shopping_cart_id

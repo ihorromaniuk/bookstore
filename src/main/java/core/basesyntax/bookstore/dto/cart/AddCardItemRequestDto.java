@@ -1,8 +1,8 @@
 package core.basesyntax.bookstore.dto.cart;
 
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
 public record AddCardItemRequestDto(@NotNull Long bookId,
-                                    @Min(1) int quantity) {
+                                    @Positive int quantity) {
 }

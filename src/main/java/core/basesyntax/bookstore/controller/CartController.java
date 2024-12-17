@@ -2,7 +2,7 @@ package core.basesyntax.bookstore.controller;
 
 import core.basesyntax.bookstore.dto.cart.AddCardItemRequestDto;
 import core.basesyntax.bookstore.dto.cart.CartItemDto;
-import core.basesyntax.bookstore.dto.cart.CartItemWithoutBookDto;
+import core.basesyntax.bookstore.dto.cart.CartItemWithBookTitleDto;
 import core.basesyntax.bookstore.dto.cart.ShoppingCartDto;
 import core.basesyntax.bookstore.dto.cart.UpdateCartItemQuantityRequestDto;
 import core.basesyntax.bookstore.dto.exception.ExceptionDto;
@@ -56,7 +56,7 @@ public class CartController {
                     responseCode = "200",
                     description = "Created cart item",
                     content = @Content(schema =
-                    @Schema(implementation = CartItemWithoutBookDto.class))
+                    @Schema(implementation = CartItemDto.class))
             ),
             @ApiResponse(
                     responseCode = "400",
@@ -73,10 +73,9 @@ public class CartController {
     })
     @PreAuthorize("hasRole('USER')")
     @PostMapping
-    public CartItemWithoutBookDto addItemToShoppingCart(@RequestBody
-                                                        @Valid
-                                                        AddCardItemRequestDto requestDto,
-                                                        Authentication authentication) {
+    public CartItemDto addItemToShoppingCart(
+            @RequestBody @Valid AddCardItemRequestDto requestDto,
+            Authentication authentication) {
         User user = (User) authentication.getPrincipal();
         return cartService.addItemToCart(requestDto, user);
     }
@@ -87,7 +86,7 @@ public class CartController {
                     responseCode = "200",
                     description = "Updated cart item quantity",
                     content = @Content(schema =
-                    @Schema(implementation = CartItemDto.class))
+                    @Schema(implementation = CartItemWithBookTitleDto.class))
             ),
             @ApiResponse(
                     responseCode = "400",
@@ -104,12 +103,10 @@ public class CartController {
     })
     @PreAuthorize("hasRole('USER')")
     @PutMapping("/items/{cartItemId}")
-    public CartItemDto updateCartItemQuantity(@PathVariable
-                                              Long cartItemId,
-                                              @RequestBody
-                                              @Valid
-                                              UpdateCartItemQuantityRequestDto requestDto,
-                                              Authentication authentication) {
+    public CartItemWithBookTitleDto updateCartItemQuantity(
+            @PathVariable Long cartItemId,
+            @RequestBody @Valid UpdateCartItemQuantityRequestDto requestDto,
+            Authentication authentication) {
         User user = (User) authentication.getPrincipal();
         return cartService.updateCartQuantity(cartItemId, requestDto, user);
     }

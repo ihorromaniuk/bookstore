@@ -2,7 +2,6 @@ databaseChangeLog:
   - changeSet:
       id: create-shopping_carts-table
       author: Ihor Romaniuk
-      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - createTable:
             columns:
@@ -15,29 +14,20 @@ databaseChangeLog:
                   name: id
                   type: BIGINT
               - column:
-                  name: user_id
-                  type: BIGINT
                   constraints:
                     nullable: false
+                  name: is_deleted
+                  type: BIT
+                  defaultValueBoolean: false
             tableName: shopping_carts
   - changeSet:
-      id: add-unique-constraint-user_id
+      id: add-foreign-key-user-id
       author: Ihor Romaniuk
-      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
-      changes:
-        - addUniqueConstraint:
-            columnNames: user_id
-            constraintName: uc_shopping_carts_user
-            tableName: shopping_carts
-  - changeSet:
-      id: add-foreign-key-constraint-user_id-on-shopping_carts
-      author: Ihor Romaniuk
-      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - addForeignKeyConstraint:
-            baseColumnNames: user_id
+            baseColumnNames: id
             baseTableName: shopping_carts
-            constraintName: FK_SHOPPING_CARTS_ON_USER
+            constraintName: FK_SHOPPING_CARTS_ON_ID
             referencedColumnNames: id
             referencedTableName: users
 

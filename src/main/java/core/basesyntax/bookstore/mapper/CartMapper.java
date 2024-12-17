@@ -3,7 +3,7 @@ package core.basesyntax.bookstore.mapper;
 import core.basesyntax.bookstore.config.MapperConfig;
 import core.basesyntax.bookstore.dto.cart.AddCardItemRequestDto;
 import core.basesyntax.bookstore.dto.cart.CartItemDto;
-import core.basesyntax.bookstore.dto.cart.CartItemWithoutBookDto;
+import core.basesyntax.bookstore.dto.cart.CartItemWithBookTitleDto;
 import core.basesyntax.bookstore.dto.cart.ShoppingCartDto;
 import core.basesyntax.bookstore.dto.cart.UpdateCartItemQuantityRequestDto;
 import core.basesyntax.bookstore.model.Book;
@@ -28,19 +28,19 @@ public interface CartMapper {
 
     @Mapping(target = "bookId", source = "book.id")
     @Mapping(target = "bookTitle", source = "book.title")
-    CartItemDto toCartItemDto(CartItem cartItem);
+    CartItemWithBookTitleDto toCartItemWithBookTitleDto(CartItem cartItem);
 
     @Mapping(target = "bookId", source = "book.id")
-    CartItemWithoutBookDto toCartItemWithoutDto(CartItem cartItem);
+    CartItemDto toCartItemDto(CartItem cartItem);
 
     @Mapping(target = "userId", source = "user.id")
-    @Mapping(target = "cartItems", source = "cartItems", qualifiedByName = "setShoppingCarts")
+    @Mapping(target = "cartItems", source = "cartItems", qualifiedByName = "setCartItems")
     ShoppingCartDto toShoppingCartDto(ShoppingCart shoppingCart);
 
-    @Named("setShoppingCarts")
-    default List<CartItemDto> setShoppingCarts(Set<CartItem> cartItems) {
+    @Named("setCartItems")
+    default List<CartItemWithBookTitleDto> setCartItems(Set<CartItem> cartItems) {
         return cartItems.stream()
-                .map(this::toCartItemDto)
+                .map(this::toCartItemWithBookTitleDto)
                 .toList();
     }
 

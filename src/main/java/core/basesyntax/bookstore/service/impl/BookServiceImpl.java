@@ -12,11 +12,9 @@ import core.basesyntax.bookstore.model.Category;
 import core.basesyntax.bookstore.repository.SpecificationBuilder;
 import core.basesyntax.bookstore.repository.book.BookRepository;
 import core.basesyntax.bookstore.service.BookService;
-import java.util.List;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -61,31 +59,21 @@ public class BookServiceImpl implements BookService {
     @Override
     public Page<BookWithoutCategoryDto> findAll(BookParamsDto params, Pageable pageable) {
         Specification<Book> spec = bookSpecificationBuilder.build(params);
-        Page<Book> page = bookRepository.findAll(spec, pageable);
-        List<BookWithoutCategoryDto> bookWithoutCategoryDtoList = page
-                .stream()
-                .map(bookMapper::toDtoWithoutCategory)
-                .toList();
-        return new PageImpl<>(bookWithoutCategoryDtoList, pageable, page.getTotalElements());
+        return bookRepository.findAll(spec, pageable)
+                .map(bookMapper::toDtoWithoutCategory);
     }
 
     @Override
     public Page<BookWithoutCategoryDto> findAll(Pageable pageable) {
-        Page<Book> page = bookRepository.findAll(pageable);
-        List<BookWithoutCategoryDto> bookWithoutCategoryDtoList = page.stream()
-                .map(bookMapper::toDtoWithoutCategory)
-                .toList();
-        return new PageImpl<>(bookWithoutCategoryDtoList, pageable, page.getTotalElements());
+        return bookRepository.findAll(pageable)
+                .map(bookMapper::toDtoWithoutCategory);
     }
 
     @Override
     public Page<BookWithoutCategoryDto> findAllByCategoryId(Long categoryId, Pageable pageable) {
-        Page<Book> page = bookRepository
-                .findAllByCategoriesContains(Set.of(new Category(categoryId)), pageable);
-        List<BookWithoutCategoryDto> bookDtoList = page.stream()
-                .map(bookMapper::toDtoWithoutCategory)
-                .toList();
-        return new PageImpl<>(bookDtoList, pageable, page.getTotalElements());
+        return bookRepository
+                .findAllByCategoriesContains(Set.of(new Category(categoryId)), pageable)
+                .map(bookMapper::toDtoWithoutCategory);
     }
 
     @Override
