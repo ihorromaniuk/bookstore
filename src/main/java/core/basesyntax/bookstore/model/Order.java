@@ -13,11 +13,17 @@ import jakarta.persistence.Table;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Set;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "orders")
 public class Order {
@@ -49,8 +55,10 @@ public class Order {
 
     public enum Status {
         CREATED,
+        PENDING,
         ACCEPTED,
+        COMPLETED,
         SEND,
-        DELIVERED
+        DELIVERED;
     }
 }

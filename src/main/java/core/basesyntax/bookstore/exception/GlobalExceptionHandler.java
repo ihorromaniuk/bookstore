@@ -27,6 +27,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(exceptionDto, status);
     }
 
+    @ExceptionHandler(ItemsNotFoundException.class)
+    public ResponseEntity<ExceptionDto> handleItemsNotFoundException(
+            ItemsNotFoundException ex) {
+        HttpStatus status = HttpStatus.NOT_FOUND;
+        ExceptionDto exceptionDto = new ExceptionDto(status, ex.getMessage());
+        return new ResponseEntity<>(exceptionDto, status);
+    }
+
     @ExceptionHandler(RegistrationException.class)
     public ResponseEntity<ExceptionDto> handleRegistrationException(
             RegistrationException ex) {
