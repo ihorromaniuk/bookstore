@@ -35,7 +35,7 @@ databaseChangeLog:
             tableName: shopping_carts
             columns:
               - column:
-                  name: user_id
+                  name: id
                   valueComputed: "(select id from users where email = 'bob@example.com')"
         - insert:
             tableName: categories

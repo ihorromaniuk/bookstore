@@ -1,7 +1,5 @@
 package core.basesyntax.bookstore.dto.cart;
 
-public record CartItemDto(Long id,
-                          Long bookId,
-                          String bookTitle,
+public record CartItemDto(Long bookId,
                           int quantity) {
 }
