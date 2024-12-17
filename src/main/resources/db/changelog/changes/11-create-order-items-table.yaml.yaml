@@ -2,7 +2,6 @@ databaseChangeLog:
   - changeSet:
       id: create-order-items-table
       author: Ihor Romaniuk
-      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - createTable:
             columns:
@@ -38,7 +37,6 @@ databaseChangeLog:
   - changeSet:
       id: add-book_id-foreign-key
       author: Ihor Romaniuk
-      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - addForeignKeyConstraint:
             baseColumnNames: book_id
@@ -49,7 +47,6 @@ databaseChangeLog:
   - changeSet:
       id: add-order_id-foreign-key
       author: Ihor Romaniuk
-      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
         - addForeignKeyConstraint:
             baseColumnNames: order_id

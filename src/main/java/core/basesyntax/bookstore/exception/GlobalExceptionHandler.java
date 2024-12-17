@@ -19,17 +19,9 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
-    @ExceptionHandler(EntityNotFoundException.class)
+    @ExceptionHandler({EntityNotFoundException.class, ItemsNotFoundException.class})
     public ResponseEntity<ExceptionDto> handleEntityNotFoundException(
-            EntityNotFoundException ex) {
-        HttpStatus status = HttpStatus.NOT_FOUND;
-        ExceptionDto exceptionDto = new ExceptionDto(status, ex.getMessage());
-        return new ResponseEntity<>(exceptionDto, status);
-    }
-
-    @ExceptionHandler(ItemsNotFoundException.class)
-    public ResponseEntity<ExceptionDto> handleItemsNotFoundException(
-            ItemsNotFoundException ex) {
+            RuntimeException ex) {
         HttpStatus status = HttpStatus.NOT_FOUND;
         ExceptionDto exceptionDto = new ExceptionDto(status, ex.getMessage());
         return new ResponseEntity<>(exceptionDto, status);
