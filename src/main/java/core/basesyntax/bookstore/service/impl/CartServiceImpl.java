@@ -58,10 +58,10 @@ public class CartServiceImpl implements CartService {
     @Override
     public void deleteCartItem(Long cartItemId, User user) {
         ShoppingCart shoppingCart = shoppingCartRepository.getByUser(user);
-        if (cartItemRepository.existsByIdAndShoppingCart(cartItemId, shoppingCart)) {
-            cartItemRepository.deleteById(cartItemId);
+        if (!cartItemRepository.existsByIdAndShoppingCart(cartItemId, shoppingCart)) {
+            throw new EntityNotFoundException("Can't find cart item by id. Id: " + cartItemId);
         }
 
-        throw new EntityNotFoundException("Can't find cart item by id. Id: " + cartItemId);
+        cartItemRepository.deleteById(cartItemId);
     }
 }
