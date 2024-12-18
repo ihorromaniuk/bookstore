@@ -32,6 +32,12 @@ databaseChangeLog:
                   name: role_id
                   valueComputed: "(select id from roles where name = 'USER')"
         - insert:
+            tableName: shopping_carts
+            columns:
+              - column:
+                  name: id
+                  valueComputed: "(select id from users where email = 'bob@example.com')"
+        - insert:
             tableName: categories
             columns:
               - column:
