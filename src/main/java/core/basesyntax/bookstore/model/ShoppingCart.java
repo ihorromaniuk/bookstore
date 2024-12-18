@@ -1,5 +1,6 @@
 package core.basesyntax.bookstore.model;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -30,9 +31,13 @@ public class ShoppingCart {
     @JoinColumn(name = "id")
     private User user;
 
-    @OneToMany(mappedBy = "shoppingCart")
+    @OneToMany(mappedBy = "shoppingCart", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private Set<CartItem> cartItems = new HashSet<>();
 
     @Column(nullable = false)
     private boolean isDeleted = false;
+
+    public void clear() {
+        cartItems.clear();
+    }
 }

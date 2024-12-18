@@ -11,7 +11,6 @@ import core.basesyntax.bookstore.model.Order;
 import core.basesyntax.bookstore.model.OrderItem;
 import core.basesyntax.bookstore.model.ShoppingCart;
 import core.basesyntax.bookstore.model.User;
-import core.basesyntax.bookstore.repository.cart.CartItemRepository;
 import core.basesyntax.bookstore.repository.cart.ShoppingCartRepository;
 import core.basesyntax.bookstore.repository.order.OrderItemRepository;
 import core.basesyntax.bookstore.repository.order.OrderRepository;
@@ -34,7 +33,6 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final OrderItemRepository orderItemRepository;
     private final ShoppingCartRepository shoppingCartRepository;
-    private final CartItemRepository cartItemRepository;
     private final OrderMapper orderMapper;
 
     @Override
@@ -53,25 +51,24 @@ public class OrderServiceImpl implements OrderService {
         Set<OrderItem> orderItems = shoppingCart.getCartItems().stream()
                 .map(orderMapper::orderItemFromCartItem)
                 .collect(Collectors.toSet());
-        cartItemRepository.removeAllByShoppingCart(shoppingCart);
+        shoppingCart.clear();
+        shoppingCartRepository.save(shoppingCart);
 
         BigDecimal total = orderItems.stream()
                 .map(orderItem -> orderItem.getPrice()
                         .multiply(BigDecimal.valueOf(orderItem.getQuantity())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        Order order = Order.builder()
-                .shippingAddress(requestDto.shippingAddress())
-                .orderDate(LocalDateTime.now())
-                .status(Order.Status.CREATED)
-                .orderItems(orderItems)
-                .total(total)
-                .user(user)
-                .build();
-        orderRepository.save(order);
+        Order order = new Order();
+        order.setShippingAddress(requestDto.shippingAddress());
+        order.setOrderDate(LocalDateTime.now());
+        order.setStatus(Order.Status.CREATED);
+        order.setOrderItems(orderItems);
+        order.setTotal(total);
+        order.setUser(user);
 
         orderItems.forEach(orderItem -> orderItem.setOrder(order));
-        orderItemRepository.saveAll(orderItems);
+        orderRepository.save(order);
 
         return orderMapper.toDto(order);
     }
@@ -97,13 +94,11 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderItemDto getOrderItemById(Long orderId, Long orderItemId, User user) {
-        if (orderRepository.existsByIdAndUser(orderId, user)) {
-            return orderMapper.toOrderItemDto(orderItemRepository
-                    .findById(orderItemId).orElseThrow(() ->
-                    new EntityNotFoundException("Can't find order item by id. "
-                            + "Id: " + orderItemId)));
-        }
-        throw new EntityNotFoundException("Can't find order by id.Id: " + orderId);
+        return orderMapper.toOrderItemDto(orderItemRepository
+                .findByIdAndOrder_IdAndOrder_User(orderItemId, orderId, user).orElseThrow(() ->
+                        new EntityNotFoundException("Can't find order item by id. "
+                                + "Order id: " + orderId
+                                + ", order item id" + orderItemId)));
     }
 
     @Override
