@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: insert-admin-user
+      id: insert-mock-data
       author: Ihor Romaniuk
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
       changes:
