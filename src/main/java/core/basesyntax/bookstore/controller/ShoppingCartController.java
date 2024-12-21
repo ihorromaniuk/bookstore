@@ -1,14 +1,13 @@
 package core.basesyntax.bookstore.controller;
 
-import core.basesyntax.bookstore.dto.cart.AddCardItemRequestDto;
-import core.basesyntax.bookstore.dto.cart.CartItemDto;
-import core.basesyntax.bookstore.dto.cart.CartItemWithBookTitleDto;
-import core.basesyntax.bookstore.dto.cart.ShoppingCartDto;
-import core.basesyntax.bookstore.dto.cart.UpdateCartItemQuantityRequestDto;
 import core.basesyntax.bookstore.dto.exception.ExceptionDto;
 import core.basesyntax.bookstore.dto.exception.ValidationExceptionDto;
+import core.basesyntax.bookstore.dto.shoppingcart.AddCardItemRequestDto;
+import core.basesyntax.bookstore.dto.shoppingcart.CartItemDto;
+import core.basesyntax.bookstore.dto.shoppingcart.ShoppingCartDto;
+import core.basesyntax.bookstore.dto.shoppingcart.UpdateCartItemQuantityRequestDto;
 import core.basesyntax.bookstore.model.User;
-import core.basesyntax.bookstore.service.CartService;
+import core.basesyntax.bookstore.service.ShoppingCartService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -35,8 +34,8 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Shopping cart management",
         description = "Endpoints to manage shopping cart for currently logged in user")
 @RequiredArgsConstructor
-public class CartController {
-    private final CartService cartService;
+public class ShoppingCartController {
+    private final ShoppingCartService shoppingCartService;
 
     @Operation(summary = "Get shopping cart")
     @ApiResponse(
@@ -47,16 +46,16 @@ public class CartController {
     @GetMapping
     public ShoppingCartDto getShoppingCart(Authentication authentication) {
         User user = (User) authentication.getPrincipal();
-        return cartService.getShoppingCart(user);
+        return shoppingCartService.getShoppingCart(user);
     }
 
-    @Operation(summary = "Create cart item")
+    @Operation(summary = "Add cart item")
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
-                    description = "Created cart item",
+                    description = "Added cart item to shopping cart",
                     content = @Content(schema =
-                    @Schema(implementation = CartItemDto.class))
+                    @Schema(implementation = ShoppingCartDto.class))
             ),
             @ApiResponse(
                     responseCode = "400",
@@ -73,11 +72,11 @@ public class CartController {
     })
     @PreAuthorize("hasRole('USER')")
     @PostMapping
-    public CartItemDto addItemToShoppingCart(
+    public ShoppingCartDto addItemToShoppingCart(
             @RequestBody @Valid AddCardItemRequestDto requestDto,
             Authentication authentication) {
         User user = (User) authentication.getPrincipal();
-        return cartService.addItemToCart(requestDto, user);
+        return shoppingCartService.addItemToCart(requestDto, user);
     }
 
     @Operation(summary = "Update cart item quantity")
@@ -86,7 +85,7 @@ public class CartController {
                     responseCode = "200",
                     description = "Updated cart item quantity",
                     content = @Content(schema =
-                    @Schema(implementation = CartItemWithBookTitleDto.class))
+                    @Schema(implementation = CartItemDto.class))
             ),
             @ApiResponse(
                     responseCode = "400",
@@ -103,12 +102,12 @@ public class CartController {
     })
     @PreAuthorize("hasRole('USER')")
     @PutMapping("/items/{cartItemId}")
-    public CartItemWithBookTitleDto updateCartItemQuantity(
+    public ShoppingCartDto updateCartItemQuantity(
             @PathVariable Long cartItemId,
             @RequestBody @Valid UpdateCartItemQuantityRequestDto requestDto,
             Authentication authentication) {
         User user = (User) authentication.getPrincipal();
-        return cartService.updateCartQuantity(cartItemId, requestDto, user);
+        return shoppingCartService.updateCartQuantity(cartItemId, requestDto, user);
     }
 
     @Operation(summary = "Delete cart item")
@@ -128,6 +127,6 @@ public class CartController {
     @DeleteMapping("/items/{cartItemId}")
     public void deleteItem(@PathVariable Long cartItemId, Authentication authentication) {
         User user = (User) authentication.getPrincipal();
-        cartService.deleteCartItem(cartItemId, user);
+        shoppingCartService.deleteCartItem(cartItemId, user);
     }
 }

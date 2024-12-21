@@ -1,4 +1,4 @@
-package core.basesyntax.bookstore.repository.cart;
+package core.basesyntax.bookstore.repository.shoppingcart;
 
 import core.basesyntax.bookstore.model.CartItem;
 import core.basesyntax.bookstore.model.ShoppingCart;
@@ -11,6 +11,4 @@ public interface CartItemRepository extends JpaRepository<CartItem, Long> {
 
     @EntityGraph(attributePaths = "book")
     Optional<CartItem> findByIdAndShoppingCart(Long id, ShoppingCart shoppingCart);
-
-    void removeAllByShoppingCart(ShoppingCart shoppingCart);
 }

@@ -6,11 +6,11 @@ import core.basesyntax.bookstore.exception.EntityNotFoundException;
 import core.basesyntax.bookstore.exception.RegistrationException;
 import core.basesyntax.bookstore.mapper.UserMapper;
 import core.basesyntax.bookstore.model.Role;
-import core.basesyntax.bookstore.model.ShoppingCart;
 import core.basesyntax.bookstore.model.User;
-import core.basesyntax.bookstore.repository.cart.ShoppingCartRepository;
+import core.basesyntax.bookstore.repository.shoppingcart.ShoppingCartRepository;
 import core.basesyntax.bookstore.repository.user.RoleRepository;
 import core.basesyntax.bookstore.repository.user.UserRepository;
+import core.basesyntax.bookstore.service.ShoppingCartService;
 import core.basesyntax.bookstore.service.UserService;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +24,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final ShoppingCartRepository shoppingCartRepository;
+    private final ShoppingCartService shoppingCartService;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
 
@@ -43,9 +44,7 @@ public class UserServiceImpl implements UserService {
         user.setRoles(Set.of(userRole));
         userRepository.save(user);
 
-        ShoppingCart shoppingCart = new ShoppingCart();
-        shoppingCart.setUser(user);
-        shoppingCartRepository.save(shoppingCart);
+        shoppingCartService.createShoppingCart(user);
 
         return userMapper.toDto(user);
     }
