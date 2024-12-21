@@ -32,9 +32,13 @@ public class ShoppingCart {
     @JoinColumn(name = "id")
     private User user;
 
-    @OneToMany(mappedBy = "shoppingCart", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "shoppingCart", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private Set<CartItem> cartItems = new HashSet<>();
 
     @Column(nullable = false)
     private boolean isDeleted = false;
+
+    public void clear() {
+        cartItems.clear();
+    }
 }
