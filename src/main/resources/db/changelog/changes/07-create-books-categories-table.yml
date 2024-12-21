@@ -20,3 +20,23 @@ databaseChangeLog:
                   name: category_id
                   type: BIGINT
             tableName: books_categories
+  - changeSet:
+      id: add-foreign-key-constraint-book_id-on-categories
+      author: Ihor Romaniuk
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: book_id
+            baseTableName: books_categories
+            constraintName: fk_book_on_category
+            referencedColumnNames: id
+            referencedTableName: books
+  - changeSet:
+      id: add-foreign-key-constraint-category_id-on-books
+      author: Ihor Romaniuk
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: category_id
+            baseTableName: books_categories
+            constraintName: fk_category_on_book
+            referencedColumnNames: id
+            referencedTableName: categories

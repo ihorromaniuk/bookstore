@@ -75,4 +75,9 @@ public class BookServiceImpl implements BookService {
                 .findAllByCategoriesContains(Set.of(new Category(categoryId)), pageable)
                 .map(bookMapper::toDtoWithoutCategory);
     }
+
+    @Override
+    public boolean existsById(Long id) {
+        return bookRepository.existsById(id);
+    }
 }
