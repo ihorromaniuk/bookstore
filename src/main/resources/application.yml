@@ -1,17 +1,17 @@
 spring:
   application:
     name: bookstore
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/bookstore?serverTimezone=UTC
-    username: book_user
-    password: book1234
   jpa:
     hibernate:
       ddl-auto: validate
     show-sql: true
     open-in-view: false
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://mysql:${MYSQL_LOCAL_PORT}/${MYSQL_DATABASE}
+    username: ${MYSQL_USER}
+    password: ${MYSQL_PASSWORD}
 
 jwt:
-  expiration: 3000000
+  expiration: 3_600_000
   secret: Jingle_bells_jingle_bells__Jingle_all_the_way__Oh_what_fun_it_is_to_ride__In_a_one-horse_open_sleigh_hey
