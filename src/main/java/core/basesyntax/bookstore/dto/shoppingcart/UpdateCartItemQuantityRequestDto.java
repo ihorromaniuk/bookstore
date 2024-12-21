@@ -1,4 +1,4 @@
-package core.basesyntax.bookstore.dto.cart;
+package core.basesyntax.bookstore.dto.shoppingcart;
 
 import jakarta.validation.constraints.Positive;
 

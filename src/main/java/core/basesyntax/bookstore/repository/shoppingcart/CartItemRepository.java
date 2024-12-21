@@ -11,6 +11,4 @@ public interface CartItemRepository extends JpaRepository<CartItem, Long> {
 
     @EntityGraph(attributePaths = "book")
     Optional<CartItem> findByIdAndShoppingCart(Long id, ShoppingCart shoppingCart);
-
-    void removeAllByShoppingCart(ShoppingCart shoppingCart);
 }
