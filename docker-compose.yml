@@ -2,8 +2,8 @@ version: "3.8"
 
 services:
   mysql:
-    image: mysql
-    restart: on-failure:3
+    image: mysql:5.7
+    restart: always
     environment:
       MYSQL_DATABASE: $MYSQL_DATABASE
       MYSQL_USER: $MYSQL_USER
@@ -16,7 +16,7 @@ services:
   app:
     depends_on:
       - mysql
-    restart: on-failure:3
+    restart: no
     image: bookstore-app
     build: .
     env_file: ./.env
@@ -29,7 +29,7 @@ services:
         "spring.datasource.username" : "$MYSQL_USER",
         "spring.datasource.password" : "$MYSQL_PASSWORD"
       }'
-      JAVA_TOOL_OPTIONS: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:$DEBUG_PORT"
+      JAVA_TOOL_OPTIONS: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"
 # Names our volume
 volumes:
   my-db:
