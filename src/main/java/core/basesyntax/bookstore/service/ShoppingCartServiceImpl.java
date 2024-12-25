@@ -1,4 +1,4 @@
-package core.basesyntax.bookstore.service.impl;
+package core.basesyntax.bookstore.service;
 
 import core.basesyntax.bookstore.dto.shoppingcart.AddCardItemRequestDto;
 import core.basesyntax.bookstore.dto.shoppingcart.ShoppingCartDto;

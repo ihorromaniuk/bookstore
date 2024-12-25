@@ -1,11 +1,8 @@
 spring:
   datasource:
-    driver-class-name: org.h2.Driver
-    url: jdbc:h2:mem:testdb
-    username: sa
-    password: password
-  jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
+    url: jdbc:tc:mysql:latest://bookstore
+    username: test
+    password: test
 
 jwt:
   expiration: 300000

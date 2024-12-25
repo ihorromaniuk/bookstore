@@ -1,4 +1,4 @@
-package core.basesyntax.bookstore.service.impl;
+package core.basesyntax.bookstore.service;
 
 import core.basesyntax.bookstore.dto.book.BookDto;
 import core.basesyntax.bookstore.dto.book.BookParamsDto;
@@ -28,9 +28,13 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public BookDto save(CreateBookRequestDto requestDto) {
-        return bookMapper.toDto(
-                bookRepository.save(bookMapper.createDtoToModel(requestDto))
-        );
+        Book dtoToModel = bookMapper.createDtoToModel(requestDto);
+        Book book = bookRepository.save(dtoToModel);
+        BookDto dto = bookMapper.toDto(book);
+        return dto;
+//        return bookMapper.toDto(
+//                bookRepository.save(bookMapper.createDtoToModel(requestDto))
+//        );
     }
 
     @Override
