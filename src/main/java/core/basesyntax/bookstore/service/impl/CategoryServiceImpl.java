@@ -1,4 +1,4 @@
-package core.basesyntax.bookstore.service;
+package core.basesyntax.bookstore.service.impl;
 
 import core.basesyntax.bookstore.dto.category.CategoryDto;
 import core.basesyntax.bookstore.dto.category.CreateCategoryRequestDto;

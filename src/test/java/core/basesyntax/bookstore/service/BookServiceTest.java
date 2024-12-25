@@ -8,6 +8,7 @@ import core.basesyntax.bookstore.dto.book.CreateBookRequestDto;
 import core.basesyntax.bookstore.mapper.BookMapper;
 import core.basesyntax.bookstore.model.Book;
 import core.basesyntax.bookstore.repository.book.BookRepository;
+import core.basesyntax.bookstore.service.impl.BookServiceImpl;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;

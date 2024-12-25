@@ -1,4 +1,4 @@
-package core.basesyntax.bookstore.service;
+package core.basesyntax.bookstore.service.impl;
 
 import core.basesyntax.bookstore.dto.book.BookDto;
 import core.basesyntax.bookstore.dto.book.BookParamsDto;
