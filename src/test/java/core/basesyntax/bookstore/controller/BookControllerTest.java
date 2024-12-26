@@ -217,7 +217,6 @@ public class BookControllerTest {
         assertEquals(expected, actual);
     }
 
-
     @WithMockUser(username = "admin", roles = "ADMIN")
     @Sql(scripts = {"classpath:database/book/remove_shining_book.sql"},
             executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
@@ -411,7 +410,6 @@ public class BookControllerTest {
     void deleteBook_deleteBookOk_204() {
         mockMvc.perform(delete("/books/4"))
                 .andExpect(status().isNoContent());
-        System.out.println();
     }
 
     @WithMockUser(username = "admin", roles = "ADMIN")

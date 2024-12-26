@@ -2,7 +2,6 @@ package core.basesyntax.bookstore.exception;
 
 import core.basesyntax.bookstore.dto.exception.ExceptionDto;
 import core.basesyntax.bookstore.dto.exception.ValidationExceptionDto;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.http.HttpHeaders;

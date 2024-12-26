@@ -27,11 +27,11 @@ class BookRepositoryTest {
             "classpath:database/book/insert_mr_mercedes_book.sql"
     }, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = {
-            "classpath:database/book/remove_all_books.sql",
+            "classpath:database/book/remove_mr_mercedes_book.sql",
             "classpath:database/category/remove_all_categories.sql"
     }, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     void findById_booksWithCategoriesNoLazyInitializationThrown_ok() {
-        Long id = 1L;
+        Long id = 4L;
         Book book = bookRepository.findById(id).orElseThrow();
         Set<Category> categories = book.getCategories();
 
