@@ -15,9 +15,9 @@ insert into books (id, title, author, isbn, price, description, cover_image)
 values (2,
         'Harry Potter and the Philosopher\'s stone',
         'J.K. Rowling',
-        '978-1-4088-5565-2',
+        '9781408855652',
         475,
-        'Book about wizzard',
+        'Book about wizard',
         'image url');
 insert into books_categories (book_id, category_id)
 values (2, 2);

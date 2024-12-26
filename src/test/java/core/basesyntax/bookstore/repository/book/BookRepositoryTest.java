@@ -24,11 +24,11 @@ class BookRepositoryTest {
     @Test
     @Sql(scripts = {
             "classpath:database/category/insert_category.sql",
-            "classpath:database/book/insert_book.sql"
+            "classpath:database/book/insert_mr_mercedes_book.sql"
     }, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = {
-            "classpath:database/book/remove_book.sql",
-            "classpath:database/category/remove_category.sql"
+            "classpath:database/book/remove_all_books.sql",
+            "classpath:database/category/remove_all_categories.sql"
     }, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     void findById_booksWithCategoriesNoLazyInitializationThrown_ok() {
         Long id = 1L;
@@ -44,8 +44,8 @@ class BookRepositoryTest {
             "classpath:database/book/insert_3_books.sql"
     }, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = {
-            "classpath:database/book/remove_3_books.sql",
-            "classpath:database/category/remove_2_categories.sql"
+            "classpath:database/book/remove_all_books.sql",
+            "classpath:database/category/remove_all_categories.sql"
     }, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     void findAllByCategoriesContain_findBooksByCategory_ok() {
         Pageable pageable = Pageable.unpaged();
