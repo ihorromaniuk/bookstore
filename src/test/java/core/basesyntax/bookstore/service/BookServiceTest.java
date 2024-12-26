@@ -2,7 +2,6 @@ package core.basesyntax.bookstore.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.nullable;
@@ -21,6 +20,7 @@ import core.basesyntax.bookstore.mapper.BookMapper;
 import core.basesyntax.bookstore.model.Book;
 import core.basesyntax.bookstore.repository.SpecificationBuilder;
 import core.basesyntax.bookstore.repository.book.BookRepository;
+import core.basesyntax.bookstore.repository.category.CategoryRepository;
 import core.basesyntax.bookstore.service.impl.BookServiceImpl;
 import java.math.BigDecimal;
 import java.util.List;
@@ -57,6 +57,9 @@ class BookServiceTest {
 
     @Mock
     private BookRepository bookRepository;
+
+    @Mock
+    private CategoryRepository categoryRepository;
 
     @Mock
     private BookMapper bookMapper;
@@ -259,6 +262,7 @@ class BookServiceTest {
                 null
         );
 
+        when(categoryRepository.existsById(ID)).thenReturn(true);
         when(bookRepository.findAllByCategoriesContains(any(Set.class), eq(pageable)))
                 .thenReturn(page);
         when(bookMapper.toDtoWithoutCategory(BOOK)).thenReturn(bookDto);
@@ -270,12 +274,5 @@ class BookServiceTest {
                 bookService.findAllByCategoryId(ID, pageable);
 
         assertEquals(expected, actual);
-    }
-
-    @Test
-    void existsById_bookExistsById_ok() {
-        when(bookRepository.existsById(ID)).thenReturn(true);
-
-        assertTrue(bookService.existsById(ID));
     }
 }

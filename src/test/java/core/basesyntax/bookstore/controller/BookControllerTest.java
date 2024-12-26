@@ -2,7 +2,6 @@ package core.basesyntax.bookstore.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -10,7 +9,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import core.basesyntax.bookstore.dto.book.BookDto;
 import core.basesyntax.bookstore.dto.book.BookParamsDto;
 import core.basesyntax.bookstore.dto.book.BookWithoutCategoryDto;
@@ -19,63 +17,37 @@ import core.basesyntax.bookstore.dto.book.UpdateBookRequestDto;
 import core.basesyntax.bookstore.dto.exception.ExceptionDto;
 import core.basesyntax.bookstore.dto.exception.ValidationExceptionDto;
 import java.math.BigDecimal;
-import java.sql.Connection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.sql.DataSource;
 import lombok.SneakyThrows;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.jdbc.datasource.init.ScriptUtils;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class BookControllerTest {
+@Sql(scripts = {
+        "classpath:database/book/remove_all_books.sql",
+        "classpath:database/category/remove_all_categories.sql",
+        "classpath:database/category/insert_2_categories.sql",
+        "classpath:database/book/insert_3_books.sql"
+},
+        executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS)
+@Sql(scripts = {
+        "classpath:database/book/remove_all_books.sql",
+        "classpath:database/category/remove_all_categories.sql"
+},
+        executionPhase = Sql.ExecutionPhase.AFTER_TEST_CLASS)
+public class BookControllerTest extends BaseControllerTest {
     private static final String TITLE = "Shining";
     private static final String AUTHOR = "Stephen King";
     private static final BigDecimal PRICE = BigDecimal.valueOf(100);
-    private static final long ID = 1L;
+    private static final Long ID = 1L;
     private static final String ISBN = "12345678";
     private static final String DESCRIPTION = "spooky book";
     private static final String COVER_IMAGE = "www.cool-images.com/shining";
-    private static final String CONTENT_KEY = "content";
-
-    private static MockMvc mockMvc;
-
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    @SneakyThrows
-    @BeforeAll
-    static void beforeAll(@Autowired WebApplicationContext applicationContext,
-                          @Autowired DataSource dataSource) {
-        mockMvc = MockMvcBuilders
-                .webAppContextSetup(applicationContext)
-                .apply(springSecurity())
-                .build();
-        afterAll(dataSource);
-        try (Connection connection = dataSource.getConnection()) {
-            connection.setAutoCommit(true);
-            ScriptUtils.executeSqlScript(
-                    connection,
-                    new ClassPathResource("database/category/insert_2_categories.sql"));
-            ScriptUtils.executeSqlScript(
-                    connection,
-                    new ClassPathResource("database/book/insert_3_books.sql"));
-        }
-    }
 
     @WithMockUser(username = "user", roles = "USER")
     @SneakyThrows
@@ -430,19 +402,5 @@ public class BookControllerTest {
                 .usingRecursiveComparison()
                 .ignoringFields("timestamp")
                 .isEqualTo(expected);
-    }
-
-    @SneakyThrows
-    @AfterAll
-    static void afterAll(@Autowired DataSource dataSource) {
-        try (Connection connection = dataSource.getConnection()) {
-            connection.setAutoCommit(true);
-            ScriptUtils.executeSqlScript(
-                    connection,
-                    new ClassPathResource("database/book/remove_all_books.sql"));
-            ScriptUtils.executeSqlScript(
-                    connection,
-                    new ClassPathResource("database/category/remove_all_categories.sql"));
-        }
     }
 }

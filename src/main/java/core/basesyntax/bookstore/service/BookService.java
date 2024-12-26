@@ -22,6 +22,4 @@ public interface BookService {
     Page<BookWithoutCategoryDto> findAll(Pageable pageable);
 
     Page<BookWithoutCategoryDto> findAllByCategoryId(Long categoryId, Pageable pageable);
-
-    boolean existsById(Long id);
 }
