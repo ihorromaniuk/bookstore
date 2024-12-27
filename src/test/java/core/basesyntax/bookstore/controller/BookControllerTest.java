@@ -41,10 +41,11 @@ import org.springframework.test.web.servlet.MvcResult;
 },
         executionPhase = Sql.ExecutionPhase.AFTER_TEST_CLASS)
 public class BookControllerTest extends BaseControllerTest {
+    private static final Long ID_AFTER_LAST_INSERTED_BOOK = 4L;
     private static final String TITLE = "Shining";
     private static final String AUTHOR = "Stephen King";
     private static final BigDecimal PRICE = BigDecimal.valueOf(100);
-    private static final Long ID = 1L;
+    private static final Long CATEGORY_ID = 1L;
     private static final String ISBN = "12345678";
     private static final String DESCRIPTION = "spooky book";
     private static final String COVER_IMAGE = "www.cool-images.com/shining";
@@ -128,14 +129,15 @@ public class BookControllerTest extends BaseControllerTest {
     @SneakyThrows
     @Test
     void getBookById_bookNotFound_404() {
-        MvcResult mvcResult = mockMvc.perform(get("/books/4")
+        MvcResult mvcResult = mockMvc.perform(get("/books/"
+                        + ID_AFTER_LAST_INSERTED_BOOK)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
                 .andReturn();
         ExceptionDto actual = objectMapper.readValue(mvcResult.getResponse().getContentAsString(),
                 ExceptionDto.class);
         ExceptionDto expected = new ExceptionDto(HttpStatus.NOT_FOUND,
-                "Can't find book by id. Id: 4");
+                "Can't find book by id. Id: " + ID_AFTER_LAST_INSERTED_BOOK);
 
         assertThat(actual)
                 .usingRecursiveComparison()
@@ -178,7 +180,7 @@ public class BookControllerTest extends BaseControllerTest {
                 3L,
                 "Charlie and the Chocolate Factory",
                 "Q. Blake",
-                "9780241558324",
+                "978024155832" + ID_AFTER_LAST_INSERTED_BOOK,
                 BigDecimal.valueOf(400),
                 "Book about Willy Wonka",
                 "image url"
@@ -202,18 +204,18 @@ public class BookControllerTest extends BaseControllerTest {
                 PRICE,
                 DESCRIPTION,
                 COVER_IMAGE,
-                List.of(ID)
+                List.of(CATEGORY_ID)
         );
 
         BookDto expectedBody = new BookDto(
-                ID,
+                0L,
                 TITLE,
                 AUTHOR,
                 ISBN,
                 PRICE,
                 DESCRIPTION,
                 COVER_IMAGE,
-                Set.of(ID));
+                Set.of(CATEGORY_ID));
         String jsonRequest = objectMapper.writeValueAsString(requestDto);
 
         MvcResult mvcResult = mockMvc.perform(post("/books")
@@ -241,7 +243,7 @@ public class BookControllerTest extends BaseControllerTest {
                 PRICE,
                 DESCRIPTION,
                 COVER_IMAGE,
-                List.of(ID)
+                List.of(CATEGORY_ID)
         );
         String jsonRequest = objectMapper.writeValueAsString(requestDto);
 
@@ -282,10 +284,11 @@ public class BookControllerTest extends BaseControllerTest {
                 PRICE,
                 DESCRIPTION,
                 COVER_IMAGE,
-                List.of(ID)
+                List.of(CATEGORY_ID)
         );
 
-        MvcResult mvcResult = mockMvc.perform(put("/books/4")
+        MvcResult mvcResult = mockMvc.perform(put("/books/"
+                        + ID_AFTER_LAST_INSERTED_BOOK)
                         .content(objectMapper.writeValueAsBytes(updateBookRequestDto))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -300,7 +303,7 @@ public class BookControllerTest extends BaseControllerTest {
                 PRICE,
                 DESCRIPTION,
                 COVER_IMAGE,
-                Set.of(ID)
+                Set.of(CATEGORY_ID)
         );
 
         assertEquals(expected, actual);
@@ -317,9 +320,10 @@ public class BookControllerTest extends BaseControllerTest {
                 PRICE,
                 DESCRIPTION,
                 COVER_IMAGE,
-                List.of(ID)
+                List.of(CATEGORY_ID)
         );
-        MvcResult mvcResult = mockMvc.perform(put("/books/4")
+        MvcResult mvcResult = mockMvc.perform(put("/books/"
+                        + ID_AFTER_LAST_INSERTED_BOOK)
                         .content(objectMapper.writeValueAsBytes(updateBookRequestDto))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
@@ -328,7 +332,8 @@ public class BookControllerTest extends BaseControllerTest {
                 .readValue(mvcResult.getResponse().getContentAsString(),
                 ExceptionDto.class);
         ExceptionDto expected = new ExceptionDto(HttpStatus.NOT_FOUND,
-                "Can't find book by id to update. Id: 4");
+                "Can't find book by id to update. Id: "
+                        + ID_AFTER_LAST_INSERTED_BOOK);
 
         assertThat(actual)
                 .usingRecursiveComparison()
@@ -349,7 +354,8 @@ public class BookControllerTest extends BaseControllerTest {
                 COVER_IMAGE,
                 List.of()
         );
-        MvcResult mvcResult = mockMvc.perform(put("/books/4")
+        MvcResult mvcResult = mockMvc.perform(put("/books/"
+                        + ID_AFTER_LAST_INSERTED_BOOK)
                         .content(objectMapper.writeValueAsBytes(updateBookRequestDto))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
@@ -380,7 +386,7 @@ public class BookControllerTest extends BaseControllerTest {
     @SneakyThrows
     @Test
     void deleteBook_deleteBookOk_204() {
-        mockMvc.perform(delete("/books/4"))
+        mockMvc.perform(delete("/books/" + ID_AFTER_LAST_INSERTED_BOOK))
                 .andExpect(status().isNoContent());
     }
 
@@ -388,7 +394,8 @@ public class BookControllerTest extends BaseControllerTest {
     @SneakyThrows
     @Test
     void deleteBook_bookNotFound_404() {
-        MvcResult mvcResult = mockMvc.perform(delete("/books/4"))
+        MvcResult mvcResult = mockMvc.perform(delete("/books/"
+                        + ID_AFTER_LAST_INSERTED_BOOK))
                 .andExpect(status().isNotFound())
                 .andReturn();
 
@@ -396,7 +403,7 @@ public class BookControllerTest extends BaseControllerTest {
                 .readValue(mvcResult.getResponse().getContentAsString(),
                         ExceptionDto.class);
         ExceptionDto expected = new ExceptionDto(HttpStatus.NOT_FOUND,
-                "Can't find book by id to delete. Id: 4");
+                "Can't find book by id to delete. Id: " + ID_AFTER_LAST_INSERTED_BOOK);
 
         assertThat(actual)
                 .usingRecursiveComparison()

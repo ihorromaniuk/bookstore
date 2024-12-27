@@ -39,10 +39,10 @@ import org.springframework.data.jpa.domain.Specification;
 
 @ExtendWith(MockitoExtension.class)
 class BookServiceTest {
+    private static final Long ID = 1L;
     private static final String TITLE = "Shining";
     private static final String AUTHOR = "Stephen King";
     private static final BigDecimal PRICE = BigDecimal.valueOf(100);
-    private static final long ID = 1L;
     private static final String ISBN = "12345678";
     private static final Book BOOK = new Book(ID);
     private static final BookDto BOOK_DTO = new BookDto(
