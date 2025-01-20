@@ -2,6 +2,7 @@ package core.basesyntax.bookstore.repository.book;
 
 import core.basesyntax.bookstore.model.Book;
 import core.basesyntax.bookstore.model.Category;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import org.springframework.data.domain.Page;

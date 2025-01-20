@@ -1,7 +1,12 @@
 package core.basesyntax.bookstore.controller;
 
+import static core.basesyntax.bookstore.util.TestUtil.CONTENT_KEY;
+import static core.basesyntax.bookstore.util.TestUtil.DESCRIPTION_ACTION;
+import static core.basesyntax.bookstore.util.TestUtil.ID_AFTER_LAST_INSERTED_CATEGORY;
+import static core.basesyntax.bookstore.util.TestUtil.NAME_ACTION;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -37,17 +42,18 @@ import org.springframework.test.web.servlet.MvcResult;
 },
         executionPhase = Sql.ExecutionPhase.AFTER_TEST_CLASS)
 public class CategoryControllerTest extends BaseControllerTest {
-    private static final Long ID_AFTER_LAST_INSERTED_CATEGORY = 3L;
-    private static final String NAME = "action";
-    private static final String DESCRIPTION = "action genre";
-
     @WithMockUser(username = "user", roles = "USER")
     @SneakyThrows
     @Test
     void getAllCategories_getCategories_200() {
+        //given
+
+        //when
         MvcResult mvcResult = mockMvc.perform(get("/categories"))
                 .andExpect(status().isOk())
                 .andReturn();
+
+        //then
         Map<String, Object> responseBody = objectMapper.readValue(
                 mvcResult.getResponse().getContentAsString(),
                 new TypeReference<>() {}
@@ -55,7 +61,6 @@ public class CategoryControllerTest extends BaseControllerTest {
         List<CategoryDto> actual = objectMapper.readValue(
                 objectMapper.writeValueAsString(responseBody.get(CONTENT_KEY)),
                 new TypeReference<>() {});
-
         CategoryDto adventureFromDb = new CategoryDto(
                 1L,
                 "adventure",
@@ -67,17 +72,21 @@ public class CategoryControllerTest extends BaseControllerTest {
                 "magic genre"
         );
         List<CategoryDto> expected = List.of(adventureFromDb, fantasyFromDb);
-
-        assertEquals(expected, actual);
+        assertIterableEquals(expected, actual);
     }
 
     @WithMockUser(username = "user", roles = "USER")
     @SneakyThrows
     @Test
     void getCategoryById_getCategory_200() {
+        //given
+
+        //when
         MvcResult mvcResult = mockMvc.perform(get("/categories/1"))
                 .andExpect(status().isOk())
                 .andReturn();
+
+        //then
         CategoryDto actual = objectMapper
                 .readValue(mvcResult.getResponse().getContentAsString(), CategoryDto.class);
         CategoryDto expected = new CategoryDto(
@@ -85,7 +94,6 @@ public class CategoryControllerTest extends BaseControllerTest {
                 "adventure",
                 "adventure genre"
         );
-
         assertEquals(expected, actual);
     }
 
@@ -93,10 +101,15 @@ public class CategoryControllerTest extends BaseControllerTest {
     @SneakyThrows
     @Test
     void getCategoryById_categoryNotFound_404() {
+        //given
+
+        //when
         MvcResult mvcResult = mockMvc.perform(get("/categories/"
                         + ID_AFTER_LAST_INSERTED_CATEGORY))
                 .andExpect(status().isNotFound())
                 .andReturn();
+
+        //then
         ExceptionDto actual = objectMapper
                 .readValue(mvcResult.getResponse().getContentAsString(), ExceptionDto.class);
         ExceptionDto expected = new ExceptionDto(HttpStatus.NOT_FOUND,
@@ -116,23 +129,27 @@ public class CategoryControllerTest extends BaseControllerTest {
     @SneakyThrows
     @Test
     void createCategory_createCategory_201() {
+        //given
         CreateCategoryRequestDto createCategoryRequestDto = new CreateCategoryRequestDto(
-                NAME,
-                DESCRIPTION
+                NAME_ACTION,
+                DESCRIPTION_ACTION
         );
+
+        //when
         MvcResult mvcResult = mockMvc.perform(post("/categories")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(createCategoryRequestDto)))
                 .andExpect(status().isCreated())
                 .andReturn();
+
+        //then
         CategoryDto actual = objectMapper
                 .readValue(mvcResult.getResponse().getContentAsString(), CategoryDto.class);
         CategoryDto expected = new CategoryDto(
                 0L,
-                NAME,
-                DESCRIPTION
+                NAME_ACTION,
+                DESCRIPTION_ACTION
         );
-
         assertThat(actual)
                 .usingRecursiveComparison()
                 .ignoringFields("id")
@@ -143,15 +160,20 @@ public class CategoryControllerTest extends BaseControllerTest {
     @SneakyThrows
     @Test
     void createCategory_validationFailed_400() {
+        //given
         CreateCategoryRequestDto createCategoryRequestDto = new CreateCategoryRequestDto(
                 "",
-                DESCRIPTION
+                DESCRIPTION_ACTION
         );
+
+        //when
         MvcResult mvcResult = mockMvc.perform(post("/categories")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(createCategoryRequestDto)))
                 .andExpect(status().isBadRequest())
                 .andReturn();
+
+        //then
         ValidationExceptionDto actual = objectMapper.readValue(
                 mvcResult.getResponse().getContentAsString(),
                 ValidationExceptionDto.class
@@ -160,7 +182,6 @@ public class CategoryControllerTest extends BaseControllerTest {
                 HttpStatus.BAD_REQUEST,
                 Set.of("name must not be blank")
         );
-
         assertThat(actual)
                 .usingRecursiveComparison()
                 .ignoringFields("timestamp")
@@ -177,23 +198,26 @@ public class CategoryControllerTest extends BaseControllerTest {
     @SneakyThrows
     @Test
     void updateCategory_updateCategory_200() {
+        //given
         UpdateCategoryRequestDto requestDto = new UpdateCategoryRequestDto(
-                NAME,
-                DESCRIPTION
+                NAME_ACTION,
+                DESCRIPTION_ACTION
         );
 
+        //when
         MvcResult mvcResult = mockMvc.perform(put("/categories/"
                         + ID_AFTER_LAST_INSERTED_CATEGORY)
                         .content(objectMapper.writeValueAsString(requestDto))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
+
+        //then
         CategoryDto actual = objectMapper
                 .readValue(mvcResult.getResponse().getContentAsString(), CategoryDto.class);
         CategoryDto expected = new CategoryDto(ID_AFTER_LAST_INSERTED_CATEGORY,
-                NAME,
-                DESCRIPTION);
-
+                NAME_ACTION,
+                DESCRIPTION_ACTION);
         assertEquals(expected, actual);
     }
 
@@ -201,24 +225,27 @@ public class CategoryControllerTest extends BaseControllerTest {
     @SneakyThrows
     @Test
     void updateCategory_categoryNotFound_404() {
+        //given
         UpdateCategoryRequestDto requestDto = new UpdateCategoryRequestDto(
-                NAME,
-                DESCRIPTION
+                NAME_ACTION,
+                DESCRIPTION_ACTION
         );
 
+        //when
         MvcResult mvcResult = mockMvc.perform(put("/categories/"
                         + ID_AFTER_LAST_INSERTED_CATEGORY)
                         .content(objectMapper.writeValueAsString(requestDto))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
                 .andReturn();
+
+        //then
         ExceptionDto actual = objectMapper
                 .readValue(mvcResult.getResponse().getContentAsString(), ExceptionDto.class);
         ExceptionDto expected = new ExceptionDto(
                 HttpStatus.NOT_FOUND,
                 "Can't find category by id. Id: " + ID_AFTER_LAST_INSERTED_CATEGORY
         );
-
         assertThat(actual)
                 .usingRecursiveComparison()
                 .ignoringFields("timestamp")
@@ -229,16 +256,20 @@ public class CategoryControllerTest extends BaseControllerTest {
     @SneakyThrows
     @Test
     void updateCategory_validationFailed_400() {
+        //given
         UpdateCategoryRequestDto requestDto = new UpdateCategoryRequestDto(
                 "",
-                DESCRIPTION
+                DESCRIPTION_ACTION
         );
 
+        //when
         MvcResult mvcResult = mockMvc.perform(put("/categories/1")
                         .content(objectMapper.writeValueAsString(requestDto))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andReturn();
+
+        //then
         ValidationExceptionDto actual = objectMapper.readValue(
                 mvcResult.getResponse().getContentAsString(),
                 ValidationExceptionDto.class
@@ -247,7 +278,6 @@ public class CategoryControllerTest extends BaseControllerTest {
                 HttpStatus.BAD_REQUEST,
                 Set.of("name must not be blank")
         );
-
         assertThat(actual)
                 .usingRecursiveComparison()
                 .ignoringFields("timestamp")
@@ -272,17 +302,19 @@ public class CategoryControllerTest extends BaseControllerTest {
     @SneakyThrows
     @Test
     void deleteCategory_categoryNotFound_404() {
+        //when
         MvcResult mvcResult = mockMvc.perform(delete("/categories/"
                         + ID_AFTER_LAST_INSERTED_CATEGORY))
                 .andExpect(status().isNotFound())
                 .andReturn();
+
+        //then
         ExceptionDto actual = objectMapper
                 .readValue(mvcResult.getResponse().getContentAsString(), ExceptionDto.class);
         ExceptionDto expected = new ExceptionDto(
                 HttpStatus.NOT_FOUND,
                 "Can't find category by id. Id: " + ID_AFTER_LAST_INSERTED_CATEGORY
         );
-
         assertThat(actual)
                 .usingRecursiveComparison()
                 .ignoringFields("timestamp")
@@ -299,10 +331,12 @@ public class CategoryControllerTest extends BaseControllerTest {
     @SneakyThrows
     @Test
     void getBooksByCategoryId_getBooksByCategory_200() {
+        //when
         MvcResult mvcResult = mockMvc.perform(get("/categories/2/books"))
                 .andExpect(status().isOk())
                 .andReturn();
 
+        //then
         Map<String, Object> responseBody = objectMapper.readValue(
                 mvcResult.getResponse().getContentAsString(),
                 new TypeReference<>() {}
@@ -310,7 +344,6 @@ public class CategoryControllerTest extends BaseControllerTest {
         List<BookWithoutCategoryDto> actual = objectMapper.readValue(
                 objectMapper.writeValueAsString(responseBody.get(CONTENT_KEY)),
                 new TypeReference<>() {});
-
         BookWithoutCategoryDto hobbit = new BookWithoutCategoryDto(
                 1L,
                 "Hobbit",
@@ -330,7 +363,6 @@ public class CategoryControllerTest extends BaseControllerTest {
                 "image url"
         );
         List<BookWithoutCategoryDto> expected = List.of(hobbit, harryPotter);
-
         assertEquals(expected, actual);
     }
 
@@ -338,18 +370,20 @@ public class CategoryControllerTest extends BaseControllerTest {
     @SneakyThrows
     @Test
     void getBooksByCategoryId_categoryNotFound_404() {
+        //when
         MvcResult mvcResult = mockMvc.perform(get("/categories/" 
                         + ID_AFTER_LAST_INSERTED_CATEGORY 
                         + "/books"))
                 .andExpect(status().isNotFound())
                 .andReturn();
+
+        //then
         ExceptionDto actual = objectMapper
                 .readValue(mvcResult.getResponse().getContentAsString(), ExceptionDto.class);
         ExceptionDto expected = new ExceptionDto(
                 HttpStatus.NOT_FOUND,
                 "Can't find category by id. Id: " + ID_AFTER_LAST_INSERTED_CATEGORY
         );
-
         assertThat(actual)
                 .usingRecursiveComparison()
                 .ignoringFields("timestamp")

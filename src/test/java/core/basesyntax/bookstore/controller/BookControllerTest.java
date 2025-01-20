@@ -1,7 +1,19 @@
 package core.basesyntax.bookstore.controller;
 
+import static core.basesyntax.bookstore.util.TestUtil.AUTHOR;
+import static core.basesyntax.bookstore.util.TestUtil.CONTENT_KEY;
+import static core.basesyntax.bookstore.util.TestUtil.COVER_IMAGE;
+import static core.basesyntax.bookstore.util.TestUtil.DESCRIPTION;
+import static core.basesyntax.bookstore.util.TestUtil.ID;
+import static core.basesyntax.bookstore.util.TestUtil.ID_AFTER_LAST_INSERTED_BOOK;
+import static core.basesyntax.bookstore.util.TestUtil.ISBN;
+import static core.basesyntax.bookstore.util.TestUtil.PRICE;
+import static core.basesyntax.bookstore.util.TestUtil.TITLE;
+import static core.basesyntax.bookstore.util.TestUtil.getDbBooksWithoutCategory;
+import static core.basesyntax.bookstore.util.TestUtil.getDbHarryPotterBookDto;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -16,9 +28,9 @@ import core.basesyntax.bookstore.dto.book.CreateBookRequestDto;
 import core.basesyntax.bookstore.dto.book.UpdateBookRequestDto;
 import core.basesyntax.bookstore.dto.exception.ExceptionDto;
 import core.basesyntax.bookstore.dto.exception.ValidationExceptionDto;
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
@@ -41,63 +53,30 @@ import org.springframework.test.web.servlet.MvcResult;
 },
         executionPhase = Sql.ExecutionPhase.AFTER_TEST_CLASS)
 public class BookControllerTest extends BaseControllerTest {
-    private static final Long ID_AFTER_LAST_INSERTED_BOOK = 4L;
-    private static final String TITLE = "Shining";
-    private static final String AUTHOR = "Stephen King";
-    private static final BigDecimal PRICE = BigDecimal.valueOf(100);
-    private static final Long CATEGORY_ID = 1L;
-    private static final String ISBN = "12345678";
-    private static final String DESCRIPTION = "spooky book";
-    private static final String COVER_IMAGE = "www.cool-images.com/shining";
-
     @WithMockUser(username = "user", roles = "USER")
     @SneakyThrows
     @Test
     void findAll_getAllBooksFromDb_200() {
+        //given
+
+        //when
         MvcResult mvcResult = mockMvc.perform(get("/books")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
-
         Map<String, Object> responseBody = objectMapper.readValue(
                 mvcResult.getResponse().getContentAsString(),
-                new TypeReference<>() {}
+                new TypeReference<>() {
+                }
         );
         List<BookWithoutCategoryDto> actual = objectMapper.readValue(
                 objectMapper.writeValueAsString(responseBody.get(CONTENT_KEY)),
-                new TypeReference<>() {});
+                new TypeReference<>() {
+                });
 
-        BookWithoutCategoryDto hobbit = new BookWithoutCategoryDto(
-                1L,
-                "Hobbit",
-                "J.R.R. Tolkien",
-                "9780261102217",
-                BigDecimal.valueOf(500),
-                "Book about adventures of hobbit",
-                "image url"
-        );
-        BookWithoutCategoryDto harryPotter = new BookWithoutCategoryDto(
-                2L,
-                "Harry Potter and the Philosopher's stone",
-                "J.K. Rowling",
-                "9781408855652",
-                BigDecimal.valueOf(475),
-                "Book about wizard",
-                "image url"
-        );
-        BookWithoutCategoryDto charlie = new BookWithoutCategoryDto(
-                3L,
-                "Charlie and the Chocolate Factory",
-                "Q. Blake",
-                "9780241558324",
-                BigDecimal.valueOf(400),
-                "Book about Willy Wonka",
-                "image url"
-        );
-        List<BookWithoutCategoryDto> expected =
-                List.of(hobbit, harryPotter, charlie);
-
-        assertEquals(expected, actual);
+        //then
+        List<BookWithoutCategoryDto> expected = getDbBooksWithoutCategory();
+        assertIterableEquals(expected, actual);
     }
 
     @WithMockUser(username = "user", roles = "USER")
@@ -108,20 +87,10 @@ public class BookControllerTest extends BaseControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
+
         BookDto actual = objectMapper.readValue(mvcResult.getResponse().getContentAsString(),
                 BookDto.class);
-
-        BookDto expected = new BookDto(
-                2L,
-                "Harry Potter and the Philosopher's stone",
-                "J.K. Rowling",
-                "9781408855652",
-                BigDecimal.valueOf(475),
-                "Book about wizard",
-                "image url",
-                Set.of(2L)
-        );
-
+        BookDto expected = getDbHarryPotterBookDto();
         assertEquals(expected, actual);
     }
 
@@ -149,46 +118,33 @@ public class BookControllerTest extends BaseControllerTest {
     @SneakyThrows
     @Test
     void getBooksBySpec_getBookBySpec_200() {
+        //given
         BookParamsDto bookParamsDto = new BookParamsDto("and",
                 new String[]{"J.K. Rowling", "Q. Blake"});
         String jsonRequest = objectMapper.writeValueAsString(bookParamsDto);
 
+        //when
         MvcResult mvcResult = mockMvc.perform(post("/books/search")
                         .content(jsonRequest)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
 
+        //then
         Map<String, Object> responseBody = objectMapper.readValue(
                 mvcResult.getResponse().getContentAsString(),
-                new TypeReference<>() {}
+                new TypeReference<>() {
+                }
         );
         List<BookWithoutCategoryDto> actual = objectMapper.readValue(
                 objectMapper.writeValueAsString(responseBody.get(CONTENT_KEY)),
-                new TypeReference<>() {});
-
-        BookWithoutCategoryDto harryPotter = new BookWithoutCategoryDto(
-                2L,
-                "Harry Potter and the Philosopher's stone",
-                "J.K. Rowling",
-                "9781408855652",
-                BigDecimal.valueOf(475),
-                "Book about wizard",
-                "image url"
-        );
-        BookWithoutCategoryDto charlie = new BookWithoutCategoryDto(
-                3L,
-                "Charlie and the Chocolate Factory",
-                "Q. Blake",
-                "978024155832" + ID_AFTER_LAST_INSERTED_BOOK,
-                BigDecimal.valueOf(400),
-                "Book about Willy Wonka",
-                "image url"
-        );
-        List<BookWithoutCategoryDto> expected =
-                List.of(harryPotter, charlie);
-
-        assertEquals(expected, actual);
+                new TypeReference<>() {
+                });
+        List<BookWithoutCategoryDto> expected = getDbBooksWithoutCategory().stream()
+                .filter(dto -> Objects.equals(dto.id(), 2L)
+                        || Objects.equals(dto.id(), 3L))
+                .toList();
+        assertIterableEquals(expected, actual);
     }
 
     @WithMockUser(username = "admin", roles = "ADMIN")
@@ -197,6 +153,7 @@ public class BookControllerTest extends BaseControllerTest {
     @SneakyThrows
     @Test
     void createBook_createBook_201() {
+        //given
         CreateBookRequestDto requestDto = new CreateBookRequestDto(
                 TITLE,
                 AUTHOR,
@@ -204,9 +161,19 @@ public class BookControllerTest extends BaseControllerTest {
                 PRICE,
                 DESCRIPTION,
                 COVER_IMAGE,
-                List.of(CATEGORY_ID)
+                List.of(ID)
         );
 
+        //when
+        MvcResult mvcResult = mockMvc.perform(post("/books")
+                        .content(objectMapper.writeValueAsString(requestDto))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated())
+                .andReturn();
+
+        //then
+        BookDto actualBody = objectMapper
+                .readValue(mvcResult.getResponse().getContentAsString(), BookDto.class);
         BookDto expectedBody = new BookDto(
                 0L,
                 TITLE,
@@ -215,17 +182,7 @@ public class BookControllerTest extends BaseControllerTest {
                 PRICE,
                 DESCRIPTION,
                 COVER_IMAGE,
-                Set.of(CATEGORY_ID));
-        String jsonRequest = objectMapper.writeValueAsString(requestDto);
-
-        MvcResult mvcResult = mockMvc.perform(post("/books")
-                        .content(jsonRequest)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated())
-                .andReturn();
-        BookDto actualBody = objectMapper
-                .readValue(mvcResult.getResponse().getContentAsString(), BookDto.class);
-
+                Set.of(ID));
         assertThat(actualBody)
                 .usingRecursiveComparison()
                 .ignoringFields("id")
@@ -236,6 +193,7 @@ public class BookControllerTest extends BaseControllerTest {
     @SneakyThrows
     @Test
     void createBook_validationFailed_400() {
+        //given
         CreateBookRequestDto requestDto = new CreateBookRequestDto(
                 TITLE,
                 null,
@@ -243,24 +201,25 @@ public class BookControllerTest extends BaseControllerTest {
                 PRICE,
                 DESCRIPTION,
                 COVER_IMAGE,
-                List.of(CATEGORY_ID)
+                List.of(ID)
         );
         String jsonRequest = objectMapper.writeValueAsString(requestDto);
 
+        //when
         MvcResult mvcResult = mockMvc.perform(post("/books")
                         .content(jsonRequest)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andReturn();
+
+        //then
         ValidationExceptionDto actual = objectMapper.readValue(
                 mvcResult.getResponse().getContentAsString(),
                 ValidationExceptionDto.class
         );
-
         ValidationExceptionDto expected = new ValidationExceptionDto(
                 HttpStatus.BAD_REQUEST, Set.of("author must not be blank")
         );
-
         assertThat(actual)
                 .usingRecursiveComparison()
                 .ignoringFields("timestamp")
@@ -277,6 +236,7 @@ public class BookControllerTest extends BaseControllerTest {
     @SneakyThrows
     @Test
     void updateBook_updateBook_200() {
+        //given
         UpdateBookRequestDto updateBookRequestDto = new UpdateBookRequestDto(
                 TITLE,
                 AUTHOR,
@@ -284,15 +244,18 @@ public class BookControllerTest extends BaseControllerTest {
                 PRICE,
                 DESCRIPTION,
                 COVER_IMAGE,
-                List.of(CATEGORY_ID)
+                List.of(ID)
         );
 
+        //when
         MvcResult mvcResult = mockMvc.perform(put("/books/"
                         + ID_AFTER_LAST_INSERTED_BOOK)
                         .content(objectMapper.writeValueAsBytes(updateBookRequestDto))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
+
+        //then
         BookDto actual = objectMapper.readValue(mvcResult.getResponse().getContentAsString(),
                 BookDto.class);
         BookDto expected = new BookDto(
@@ -303,9 +266,8 @@ public class BookControllerTest extends BaseControllerTest {
                 PRICE,
                 DESCRIPTION,
                 COVER_IMAGE,
-                Set.of(CATEGORY_ID)
+                Set.of(ID)
         );
-
         assertEquals(expected, actual);
     }
 
@@ -313,6 +275,7 @@ public class BookControllerTest extends BaseControllerTest {
     @SneakyThrows
     @Test
     void updateBook_bookNotFound_404() {
+        //given
         UpdateBookRequestDto updateBookRequestDto = new UpdateBookRequestDto(
                 TITLE,
                 AUTHOR,
@@ -320,21 +283,24 @@ public class BookControllerTest extends BaseControllerTest {
                 PRICE,
                 DESCRIPTION,
                 COVER_IMAGE,
-                List.of(CATEGORY_ID)
+                List.of(ID)
         );
+
+        //when
         MvcResult mvcResult = mockMvc.perform(put("/books/"
                         + ID_AFTER_LAST_INSERTED_BOOK)
                         .content(objectMapper.writeValueAsBytes(updateBookRequestDto))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
                 .andReturn();
+
+        //then
         ExceptionDto actual = objectMapper
                 .readValue(mvcResult.getResponse().getContentAsString(),
-                ExceptionDto.class);
+                        ExceptionDto.class);
         ExceptionDto expected = new ExceptionDto(HttpStatus.NOT_FOUND,
                 "Can't find book by id to update. Id: "
                         + ID_AFTER_LAST_INSERTED_BOOK);
-
         assertThat(actual)
                 .usingRecursiveComparison()
                 .ignoringFields("timestamp")
@@ -345,6 +311,7 @@ public class BookControllerTest extends BaseControllerTest {
     @SneakyThrows
     @Test
     void updateBook_validationFailed_400() {
+        //given
         UpdateBookRequestDto updateBookRequestDto = new UpdateBookRequestDto(
                 null,
                 AUTHOR,
@@ -354,12 +321,16 @@ public class BookControllerTest extends BaseControllerTest {
                 COVER_IMAGE,
                 List.of()
         );
+
+        //when
         MvcResult mvcResult = mockMvc.perform(put("/books/"
                         + ID_AFTER_LAST_INSERTED_BOOK)
                         .content(objectMapper.writeValueAsBytes(updateBookRequestDto))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andReturn();
+
+        //then
         ValidationExceptionDto actual = objectMapper
                 .readValue(mvcResult.getResponse().getContentAsString(),
                         ValidationExceptionDto.class);
@@ -369,7 +340,6 @@ public class BookControllerTest extends BaseControllerTest {
                         "price must not be null",
                         "categoryIds must not be empty"
                 ));
-
         assertThat(actual)
                 .usingRecursiveComparison()
                 .ignoringFields("timestamp")
@@ -394,17 +364,18 @@ public class BookControllerTest extends BaseControllerTest {
     @SneakyThrows
     @Test
     void deleteBook_bookNotFound_404() {
+        //when
         MvcResult mvcResult = mockMvc.perform(delete("/books/"
                         + ID_AFTER_LAST_INSERTED_BOOK))
                 .andExpect(status().isNotFound())
                 .andReturn();
 
+        //then
         ExceptionDto actual = objectMapper
                 .readValue(mvcResult.getResponse().getContentAsString(),
                         ExceptionDto.class);
         ExceptionDto expected = new ExceptionDto(HttpStatus.NOT_FOUND,
                 "Can't find book by id to delete. Id: " + ID_AFTER_LAST_INSERTED_BOOK);
-
         assertThat(actual)
                 .usingRecursiveComparison()
                 .ignoringFields("timestamp")

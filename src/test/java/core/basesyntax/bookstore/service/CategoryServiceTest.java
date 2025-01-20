@@ -1,6 +1,15 @@
 package core.basesyntax.bookstore.service;
 
+import static core.basesyntax.bookstore.util.TestUtil.DESCRIPTION_SCI_FI;
+import static core.basesyntax.bookstore.util.TestUtil.ID_ACTION;
+import static core.basesyntax.bookstore.util.TestUtil.ID_SCI_FI;
+import static core.basesyntax.bookstore.util.TestUtil.NAME_SCI_FI;
+import static core.basesyntax.bookstore.util.TestUtil.getActionCategory;
+import static core.basesyntax.bookstore.util.TestUtil.getActionDto;
+import static core.basesyntax.bookstore.util.TestUtil.getSciFiCategory;
+import static core.basesyntax.bookstore.util.TestUtil.getSciFiDto;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -16,8 +25,6 @@ import core.basesyntax.bookstore.repository.category.CategoryRepository;
 import core.basesyntax.bookstore.service.impl.CategoryServiceImpl;
 import java.util.List;
 import java.util.Optional;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -29,16 +36,6 @@ import org.springframework.data.domain.Pageable;
 
 @ExtendWith(MockitoExtension.class)
 public class CategoryServiceTest {
-    private static final Long ID_SCI_FI = 1L;
-    private static final String NAME_SCI_FI = "sci-fi";
-    private static final Category SCI_FI = new Category(ID_SCI_FI);
-    private static final Long ID_ACTION = 2L;
-    private static final String NAME_ACTION = "action";
-    private static final Category ACTION = new Category(ID_ACTION);
-
-    private static final CategoryDto sciFiDto = new CategoryDto(ID_SCI_FI, NAME_SCI_FI, null);
-    private static final CategoryDto actionDto = new CategoryDto(ID_ACTION, NAME_ACTION, null);
-
     @Mock
     private CategoryRepository categoryRepository;
 
@@ -48,43 +45,30 @@ public class CategoryServiceTest {
     @InjectMocks
     private CategoryServiceImpl categoryService;
 
-    @BeforeAll
-    static void beforeAll() {
-        SCI_FI.setName(NAME_SCI_FI);
-        SCI_FI.setDeleted(false);
-
-        ACTION.setName(NAME_ACTION);
-        ACTION.setDeleted(false);
-    }
-
-    @BeforeEach
-    void setUp() {
-
-    }
-
     @Test
     void findAll_find2Categories_ok() {
         Pageable pageable = Pageable.unpaged();
-        Page<Category> page = new PageImpl<>(List.of(SCI_FI, ACTION), pageable, 2);
-
-        when(categoryMapper.toDto(SCI_FI)).thenReturn(sciFiDto);
-        when(categoryMapper.toDto(ACTION)).thenReturn(actionDto);
+        Page<Category> page = new PageImpl<>(
+                List.of(getActionCategory(), getSciFiCategory()), pageable, 2
+        );
+        when(categoryMapper.toDto(getSciFiCategory())).thenReturn(getSciFiDto());
+        when(categoryMapper.toDto(getActionCategory())).thenReturn(getActionDto());
         when(categoryRepository.findAll(pageable)).thenReturn(page);
 
-        Page<CategoryDto> expected = new PageImpl<>(List.of(sciFiDto, actionDto), pageable, 2);
-        Page<CategoryDto> actual = categoryService.findAll(pageable);
+        List<CategoryDto> actual = categoryService.findAll(pageable).getContent();
 
-        assertEquals(expected, actual);
+        List<CategoryDto> expected = List.of(getActionDto(), getSciFiDto());
+        assertIterableEquals(expected, actual);
     }
 
     @Test
     void getById_getCategoryById_ok() {
-        when(categoryRepository.findById(ID_ACTION)).thenReturn(Optional.of(ACTION));
-        when(categoryMapper.toDto(ACTION)).thenReturn(actionDto);
+        when(categoryRepository.findById(ID_ACTION)).thenReturn(Optional.of(getActionCategory()));
+        when(categoryMapper.toDto(getActionCategory())).thenReturn(getActionDto());
 
         CategoryDto actual = categoryService.getById(ID_ACTION);
 
-        assertEquals(actionDto, actual);
+        assertEquals(getActionDto(), actual);
     }
 
     @Test
@@ -93,51 +77,52 @@ public class CategoryServiceTest {
 
         EntityNotFoundException exception = assertThrows(EntityNotFoundException.class,
                 () -> categoryService.getById(ID_ACTION));
+
         String actualMessage = exception.getMessage();
         String expectedMessage = "Can't find category by id. Id: " + ID_ACTION;
-
         assertEquals(expectedMessage, actualMessage);
     }
 
     @Test
     void save_saveCategory_ok() {
         CreateCategoryRequestDto requestDto =
-                new CreateCategoryRequestDto(NAME_SCI_FI, null);
-
-        when(categoryMapper.toModel(requestDto)).thenReturn(SCI_FI);
-        when(categoryRepository.save(SCI_FI)).thenReturn(SCI_FI);
-        when(categoryMapper.toDto(SCI_FI)).thenReturn(sciFiDto);
+                new CreateCategoryRequestDto(NAME_SCI_FI, DESCRIPTION_SCI_FI);
+        when(categoryMapper.toModel(requestDto)).thenReturn(getSciFiCategory());
+        when(categoryRepository.save(getSciFiCategory())).thenReturn(getSciFiCategory());
+        when(categoryMapper.toDto(getSciFiCategory())).thenReturn(getSciFiDto());
 
         CategoryDto actual = categoryService.save(requestDto);
-        CategoryDto expected = new CategoryDto(ID_SCI_FI, NAME_SCI_FI, null);
 
+        CategoryDto expected = new CategoryDto(ID_SCI_FI, NAME_SCI_FI, DESCRIPTION_SCI_FI);
         assertEquals(expected, actual);
     }
 
     @Test
     void update_updateCategory_ok() {
-        UpdateCategoryRequestDto requestDto = new UpdateCategoryRequestDto(NAME_SCI_FI, null);
-
-        when(categoryRepository.findById(ID_SCI_FI)).thenReturn(Optional.of(SCI_FI));
-        when(categoryRepository.save(SCI_FI)).thenReturn(SCI_FI);
-        when(categoryMapper.toDto(SCI_FI)).thenReturn(sciFiDto);
+        UpdateCategoryRequestDto requestDto = new UpdateCategoryRequestDto(
+                NAME_SCI_FI, DESCRIPTION_SCI_FI
+        );
+        when(categoryRepository.findById(ID_SCI_FI)).thenReturn(Optional.of(getSciFiCategory()));
+        when(categoryRepository.save(getSciFiCategory())).thenReturn(getSciFiCategory());
+        when(categoryMapper.toDto(getSciFiCategory())).thenReturn(getSciFiDto());
 
         CategoryDto actual = categoryService.update(ID_SCI_FI, requestDto);
 
-        assertEquals(sciFiDto, actual);
+        assertEquals(getSciFiDto(), actual);
     }
 
     @Test
     void update_categoryNotFound_notOk() {
-        UpdateCategoryRequestDto requestDto = new UpdateCategoryRequestDto(NAME_SCI_FI, null);
-
+        UpdateCategoryRequestDto requestDto = new UpdateCategoryRequestDto(
+                NAME_SCI_FI, DESCRIPTION_SCI_FI
+        );
         when(categoryRepository.findById(ID_SCI_FI)).thenReturn(Optional.empty());
 
         EntityNotFoundException exception = assertThrows(EntityNotFoundException.class,
                 () -> categoryService.update(ID_SCI_FI, requestDto));
+
         String actualMessage = exception.getMessage();
         String expectedMessage = "Can't find category by id. Id: " + ID_SCI_FI;
-
         assertEquals(expectedMessage, actualMessage);
     }
 
@@ -157,9 +142,9 @@ public class CategoryServiceTest {
 
         EntityNotFoundException exception = assertThrows(EntityNotFoundException.class,
                 () -> categoryService.deleteById(ID_SCI_FI));
+
         String actualMessage = exception.getMessage();
         String expectedMessage = "Can't find category by id. Id: " + ID_SCI_FI;
-
         assertEquals(expectedMessage, actualMessage);
     }
 }

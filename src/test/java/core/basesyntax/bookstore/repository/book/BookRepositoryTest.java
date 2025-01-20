@@ -1,10 +1,12 @@
 package core.basesyntax.bookstore.repository.book;
 
+import static core.basesyntax.bookstore.util.TestUtil.getDbHarryPotterBook;
+import static core.basesyntax.bookstore.util.TestUtil.getDbHobbitBook;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import core.basesyntax.bookstore.model.Book;
 import core.basesyntax.bookstore.model.Category;
-import java.util.List;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +19,6 @@ import org.springframework.test.context.jdbc.Sql;
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class BookRepositoryTest {
-
     @Autowired
     private BookRepository bookRepository;
 
@@ -52,19 +53,11 @@ class BookRepositoryTest {
         Category category = new Category(2L);
         Page<Book> page = bookRepository.findAllByCategoriesContains(Set.of(category), pageable);
 
-        List<Book> books = page.toList();
-        assertEquals(2, books.size());
+        Book[] books = page.toList().toArray(new Book[0]);
+        assertEquals(2, books.length);
 
-        Book hobbit = books.stream()
-                .filter(book -> book.getId() == 1)
-                .findFirst().orElseThrow();
-        assertEquals("Hobbit", hobbit.getTitle());
-        assertEquals("J.R.R. Tolkien", hobbit.getAuthor());
-
-        Book harryPotter = books.stream()
-                .filter(book -> book.getId() == 2)
-                .findFirst().orElseThrow();
-        assertEquals("Harry Potter and the Philosopher's stone", harryPotter.getTitle());
-        assertEquals("J.K. Rowling", harryPotter.getAuthor());
+        assertThat(books)
+                .usingRecursiveFieldByFieldElementComparatorIgnoringFields("categories")
+                .isEqualTo(new Book[]{getDbHobbitBook(), getDbHarryPotterBook()});
     }
 }

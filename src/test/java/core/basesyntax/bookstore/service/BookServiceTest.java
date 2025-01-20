@@ -1,5 +1,14 @@
 package core.basesyntax.bookstore.service;
 
+import static core.basesyntax.bookstore.util.TestUtil.AUTHOR;
+import static core.basesyntax.bookstore.util.TestUtil.COVER_IMAGE;
+import static core.basesyntax.bookstore.util.TestUtil.DESCRIPTION;
+import static core.basesyntax.bookstore.util.TestUtil.ID;
+import static core.basesyntax.bookstore.util.TestUtil.ISBN;
+import static core.basesyntax.bookstore.util.TestUtil.PRICE;
+import static core.basesyntax.bookstore.util.TestUtil.TITLE;
+import static core.basesyntax.bookstore.util.TestUtil.getShiningBook;
+import static core.basesyntax.bookstore.util.TestUtil.getShiningBookDto;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -22,11 +31,9 @@ import core.basesyntax.bookstore.repository.SpecificationBuilder;
 import core.basesyntax.bookstore.repository.book.BookRepository;
 import core.basesyntax.bookstore.repository.category.CategoryRepository;
 import core.basesyntax.bookstore.service.impl.BookServiceImpl;
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -39,22 +46,6 @@ import org.springframework.data.jpa.domain.Specification;
 
 @ExtendWith(MockitoExtension.class)
 class BookServiceTest {
-    private static final Long ID = 1L;
-    private static final String TITLE = "Shining";
-    private static final String AUTHOR = "Stephen King";
-    private static final BigDecimal PRICE = BigDecimal.valueOf(100);
-    private static final String ISBN = "12345678";
-    private static final Book BOOK = new Book(ID);
-    private static final BookDto BOOK_DTO = new BookDto(
-            ID,
-            TITLE,
-            AUTHOR,
-            ISBN,
-            PRICE,
-            null,
-            null,
-            Set.of(ID));
-
     @Mock
     private BookRepository bookRepository;
 
@@ -70,15 +61,6 @@ class BookServiceTest {
     @InjectMocks
     private BookServiceImpl bookService;
 
-    @BeforeAll
-    static void beforeAll() {
-        BOOK.setTitle(TITLE);
-        BOOK.setAuthor(AUTHOR);
-        BOOK.setIsbn(ISBN);
-        BOOK.setPrice(PRICE);
-        BOOK.setDeleted(false);
-    }
-
     @Test
     void save_saveBook_ok() {
         Book bookWithoutId = new Book();
@@ -87,32 +69,32 @@ class BookServiceTest {
         bookWithoutId.setIsbn(ISBN);
         bookWithoutId.setPrice(PRICE);
         bookWithoutId.setDeleted(false);
-
         CreateBookRequestDto requestDto = new CreateBookRequestDto(
                 TITLE,
                 AUTHOR,
                 ISBN,
                 PRICE,
-                null,
-                null,
+                DESCRIPTION,
+                COVER_IMAGE,
                 List.of(ID)
         );
         when(bookMapper.createDtoToModel(requestDto)).thenReturn(bookWithoutId);
-        when(bookRepository.save(bookWithoutId)).thenReturn(BOOK);
-        when(bookMapper.toDto(BOOK)).thenReturn(BOOK_DTO);
+        when(bookRepository.save(bookWithoutId)).thenReturn(getShiningBook());
+        when(bookMapper.toDto(getShiningBook())).thenReturn(getShiningBookDto());
 
         BookDto actual = bookService.save(requestDto);
 
-        assertEquals(BOOK_DTO, actual);
+        assertEquals(getShiningBookDto(), actual);
     }
 
     @Test
     void getById_getBookById_ok() {
-        when(bookRepository.findById(ID)).thenReturn(Optional.of(BOOK));
-        when(bookMapper.toDto(BOOK)).thenReturn(BOOK_DTO);
+        when(bookRepository.findById(ID)).thenReturn(Optional.of(getShiningBook()));
+        when(bookMapper.toDto(getShiningBook())).thenReturn(getShiningBookDto());
 
         BookDto actual = bookService.getById(ID);
-        assertEquals(BOOK_DTO, actual);
+
+        assertEquals(getShiningBookDto(), actual);
     }
 
     @Test
@@ -121,9 +103,9 @@ class BookServiceTest {
 
         EntityNotFoundException ex = assertThrows(EntityNotFoundException.class,
                 () -> bookService.getById(ID));
+
         String actualMessage = ex.getMessage();
         String expectedMessage = "Can't find book by id. Id: 1";
-
         assertEquals(expectedMessage, actualMessage);
     }
 
@@ -143,9 +125,9 @@ class BookServiceTest {
 
         EntityNotFoundException ex = assertThrows(EntityNotFoundException.class,
                 () -> bookService.delete(ID));
+
         String actualMessage = ex.getMessage();
         String expectedMessage = "Can't find book by id to delete. Id: 1";
-
         assertEquals(expectedMessage, actualMessage);
     }
 
@@ -156,19 +138,18 @@ class BookServiceTest {
                 AUTHOR,
                 ISBN,
                 PRICE,
-                null,
-                null,
+                DESCRIPTION,
+                COVER_IMAGE,
                 List.of(ID)
         );
-
-        when(bookRepository.findById(ID)).thenReturn(Optional.of(BOOK));
-        when(bookRepository.save(BOOK)).thenReturn(BOOK);
-        when(bookMapper.toDto(BOOK)).thenReturn(BOOK_DTO);
+        when(bookRepository.findById(ID)).thenReturn(Optional.of(getShiningBook()));
+        when(bookRepository.save(getShiningBook())).thenReturn(getShiningBook());
+        when(bookMapper.toDto(getShiningBook())).thenReturn(getShiningBookDto());
 
         BookDto actual = bookService.update(ID, requestDto);
 
-        assertEquals(BOOK_DTO, actual);
-        verify(bookMapper).updateBookFromDto(requestDto, BOOK);
+        assertEquals(getShiningBookDto(), actual);
+        verify(bookMapper).updateBookFromDto(requestDto, getShiningBook());
     }
 
     @Test
@@ -178,18 +159,17 @@ class BookServiceTest {
                 AUTHOR,
                 ISBN,
                 PRICE,
-                null,
-                null,
+                DESCRIPTION,
+                COVER_IMAGE,
                 List.of(ID)
         );
-
         when(bookRepository.findById(ID)).thenReturn(Optional.empty());
 
         EntityNotFoundException ex = assertThrows(EntityNotFoundException.class,
                 () -> bookService.update(ID, requestDto));
+
         String actualMessage = ex.getMessage();
         String expectedMessage = "Can't find book by id to update. Id: 1";
-
         assertEquals(expectedMessage, actualMessage);
     }
 
@@ -198,26 +178,24 @@ class BookServiceTest {
         String[] authors = new String[] {AUTHOR};
         BookParamsDto bookParamsDto = new BookParamsDto(TITLE, authors);
         Pageable pageable = Pageable.unpaged();
-        Page<Book> page = new PageImpl<>(List.of(BOOK), pageable, 1);
+        Page<Book> page = new PageImpl<>(List.of(getShiningBook()), pageable, 1);
         BookWithoutCategoryDto bookDto = new BookWithoutCategoryDto(
                 ID,
                 TITLE,
                 AUTHOR,
                 ISBN,
                 PRICE,
-                null,
-                null
+                DESCRIPTION,
+                COVER_IMAGE
         );
-
         when(bookRepository.findAll(nullable(Specification.class), eq(pageable))).thenReturn(page);
-        when(bookMapper.toDtoWithoutCategory(BOOK)).thenReturn(bookDto);
-
-        Page<BookWithoutCategoryDto> expected =
-                new PageImpl<>(List.of(bookDto), pageable, 1);
+        when(bookMapper.toDtoWithoutCategory(getShiningBook())).thenReturn(bookDto);
 
         Page<BookWithoutCategoryDto> actual =
                 bookService.findAll(bookParamsDto, Pageable.unpaged());
 
+        Page<BookWithoutCategoryDto> expected =
+                new PageImpl<>(List.of(bookDto), pageable, 1);
         assertEquals(expected, actual);
         verify(bookSpecificationBuilder).build(bookParamsDto);
     }
@@ -225,54 +203,50 @@ class BookServiceTest {
     @Test
     void findAll_findAllWithPagination_ok() {
         Pageable pageable = Pageable.unpaged();
-        Page<Book> page = new PageImpl<>(List.of(BOOK), pageable, 1);
+        Page<Book> page = new PageImpl<>(List.of(getShiningBook()), pageable, 1);
         BookWithoutCategoryDto bookDto = new BookWithoutCategoryDto(
                 ID,
                 TITLE,
                 AUTHOR,
                 ISBN,
                 PRICE,
-                null,
-                null
+                DESCRIPTION,
+                COVER_IMAGE
         );
-
         when(bookRepository.findAll(pageable)).thenReturn(page);
-        when(bookMapper.toDtoWithoutCategory(BOOK)).thenReturn(bookDto);
-
-        Page<BookWithoutCategoryDto> expected =
-                new PageImpl<>(List.of(bookDto), pageable, 1);
+        when(bookMapper.toDtoWithoutCategory(getShiningBook())).thenReturn(bookDto);
 
         Page<BookWithoutCategoryDto> actual =
                 bookService.findAll(Pageable.unpaged());
 
+        Page<BookWithoutCategoryDto> expected =
+                new PageImpl<>(List.of(bookDto), pageable, 1);
         assertEquals(expected, actual);
     }
 
     @Test
     void findAllByCategoryId_findBookByCategoryId_ok() {
         Pageable pageable = Pageable.unpaged();
-        Page<Book> page = new PageImpl<>(List.of(BOOK), pageable, 1);
+        Page<Book> page = new PageImpl<>(List.of(getShiningBook()), pageable, 1);
         BookWithoutCategoryDto bookDto = new BookWithoutCategoryDto(
                 ID,
                 TITLE,
                 AUTHOR,
                 ISBN,
                 PRICE,
-                null,
-                null
+                DESCRIPTION,
+                COVER_IMAGE
         );
-
         when(categoryRepository.existsById(ID)).thenReturn(true);
         when(bookRepository.findAllByCategoriesContains(any(Set.class), eq(pageable)))
                 .thenReturn(page);
-        when(bookMapper.toDtoWithoutCategory(BOOK)).thenReturn(bookDto);
-
-        Page<BookWithoutCategoryDto> expected =
-                new PageImpl<>(List.of(bookDto), pageable, 1);
+        when(bookMapper.toDtoWithoutCategory(getShiningBook())).thenReturn(bookDto);
 
         Page<BookWithoutCategoryDto> actual =
                 bookService.findAllByCategoryId(ID, pageable);
 
+        Page<BookWithoutCategoryDto> expected =
+                new PageImpl<>(List.of(bookDto), pageable, 1);
         assertEquals(expected, actual);
     }
 }

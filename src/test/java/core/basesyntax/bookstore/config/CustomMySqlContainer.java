@@ -3,7 +3,7 @@ package core.basesyntax.bookstore.config;
 import org.testcontainers.containers.MySQLContainer;
 
 public class CustomMySqlContainer extends MySQLContainer<CustomMySqlContainer> {
-    private static final String DB_IMAGE = "mysql:latest";
+    private static final String DB_IMAGE = "mysql:9";
 
     private static CustomMySqlContainer mysqlContainer;
 
