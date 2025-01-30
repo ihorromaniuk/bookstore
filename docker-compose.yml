@@ -5,10 +5,10 @@ services:
     image: mysql
     restart: on-failure:3
     environment:
+      MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
       MYSQL_DATABASE: $MYSQL_DATABASE
       MYSQL_USER: $MYSQL_USER
       MYSQL_PASSWORD: $MYSQL_PASSWORD
-      MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
     ports:
       - $MYSQL_LOCAL_PORT:$MYSQL_DOCKER_PORT
     volumes:
@@ -16,7 +16,7 @@ services:
   app:
     depends_on:
       - mysql
-    restart: on-failure:3
+    restart: on-failure:1
     image: bookstore-app
     build: .
     env_file: ./.env

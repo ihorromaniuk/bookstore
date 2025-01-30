@@ -21,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -50,7 +51,8 @@ public class BookController {
     )
     @PreAuthorize("hasRole('USER')")
     @GetMapping
-    public Page<BookWithoutCategoryDto> getAllBooks(@ParameterObject Pageable pageable) {
+    public Page<BookWithoutCategoryDto> getAllBooks(
+            @ParameterObject @PageableDefault Pageable pageable) {
         return bookService.findAll(pageable);
     }
 

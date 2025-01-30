@@ -11,6 +11,7 @@ import core.basesyntax.bookstore.model.Book;
 import core.basesyntax.bookstore.model.Category;
 import core.basesyntax.bookstore.repository.SpecificationBuilder;
 import core.basesyntax.bookstore.repository.book.BookRepository;
+import core.basesyntax.bookstore.repository.category.CategoryRepository;
 import core.basesyntax.bookstore.service.BookService;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
+    private final CategoryRepository categoryRepository;
     private final BookMapper bookMapper;
     private final SpecificationBuilder<Book> bookSpecificationBuilder;
 
@@ -71,13 +73,11 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Page<BookWithoutCategoryDto> findAllByCategoryId(Long categoryId, Pageable pageable) {
-        return bookRepository
-                .findAllByCategoriesContains(Set.of(new Category(categoryId)), pageable)
-                .map(bookMapper::toDtoWithoutCategory);
-    }
-
-    @Override
-    public boolean existsById(Long id) {
-        return bookRepository.existsById(id);
+        if (categoryRepository.existsById(categoryId)) {
+            return bookRepository
+                    .findAllByCategoriesContains(Set.of(new Category(categoryId)), pageable)
+                    .map(bookMapper::toDtoWithoutCategory);
+        }
+        throw new EntityNotFoundException("Can't find category by id. Id: " + categoryId);
     }
 }

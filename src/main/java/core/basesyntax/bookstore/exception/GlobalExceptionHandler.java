@@ -2,7 +2,8 @@ package core.basesyntax.bookstore.exception;
 
 import core.basesyntax.bookstore.dto.exception.ExceptionDto;
 import core.basesyntax.bookstore.dto.exception.ValidationExceptionDto;
-import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -59,9 +60,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             WebRequest request
     ) {
         HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
-        List<String> errors = ex.getBindingResult().getAllErrors().stream()
+        Set<String> errors = ex.getBindingResult().getAllErrors().stream()
                 .map(this::getErrorMessage)
-                .toList();
+                .collect(Collectors.toSet());
         ValidationExceptionDto exceptionDto = new ValidationExceptionDto(httpStatus, errors);
         return new ResponseEntity<>(exceptionDto, httpStatus);
     }

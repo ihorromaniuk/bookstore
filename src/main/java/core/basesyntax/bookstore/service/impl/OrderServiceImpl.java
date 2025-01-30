@@ -59,13 +59,13 @@ public class OrderServiceImpl implements OrderService {
                         .multiply(BigDecimal.valueOf(orderItem.getQuantity())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        Order order = new Order();
-        order.setShippingAddress(requestDto.shippingAddress());
-        order.setOrderDate(LocalDateTime.now());
-        order.setStatus(Order.Status.CREATED);
-        order.setOrderItems(orderItems);
-        order.setTotal(total);
-        order.setUser(user);
+        Order order = new Order()
+                .setShippingAddress(requestDto.shippingAddress())
+                .setOrderDate(LocalDateTime.now())
+                .setStatus(Order.Status.CREATED)
+                .setOrderItems(orderItems)
+                .setTotal(total)
+                .setUser(user);
 
         orderItems.forEach(orderItem -> orderItem.setOrder(order));
         orderRepository.save(order);
