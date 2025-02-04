@@ -1,16 +1,17 @@
 ![bookshelf.jpg](src/main/resources/static/bookshelf.jpg)
-# Book Store
-This project is an API for managing and using book store. 
- As an admin you can manage state of your book store like adding/updating/removing books 
+# Dream Books
+This project is an API for managing and using bookshop. 
+As an admin you can manage state of your bookshop like adding/updating/removing books 
 and categories(genres) and as a user you can look for books, adding them to your shopping cart and 
 creating orders based on your shopping cart.
 
 ## Technology stack
-- **Java Core**
-- **Database**: Hibernate, JDBC, MySQL
-- **Spring**: Spring Core, Spring Web, Spring Security, Spring Data
-- **Web Development**: Tomcat, JSON
-- **Tools**: JUnit, Maven, Liquibase, Mockito, Test containers, Docker / Docker compose, Swagger
+- **Java 21**
+- **Database**: Hibernate 6.6.2, MySQL 9.1.0
+- **Spring 3.4.0**: Spring Core, Spring Web, Spring Security, Spring Data
+- **Web Development**: Tomcat 10.1.33, JSON
+- **Tools**: JUnit 5, Maven 3.9.9, Liquibase 4.29.2, Mockito 5.14.2, Test containers 1.20.4, 
+Docker 27.3.1, Swagger 2.2.25
 
 ## Launch instructions
 After cloning this project on your machine the only requirement is to have running docker,
@@ -55,28 +56,35 @@ get full information about endpoints
 - POST: /api/auth/register - register new user
 - POST: /api/auth/login - authenticate(login)
 ### Admin endpoints
+#### Books
 - POST: /api/books/ - create new book
 - PUT: /api/books/{id} - update book in database
 - DELETE: /api/books/{id} - remove book (soft delete)
+#### Categories
 - POST: /api/categories - create new category
 - PUT: /api/categories/{id} - update category in database
 - DELETE: /api/categories/{id} - remove category (soft delete)
 ### User endpoints
+#### Books
 - GET: /api/books - get list of available books
 - GET: /api/books/{id} - get specific book
 - POST: /api/books/search - get filtered list of books
+#### Categories
 - GET: /api/categories - get list of available categories
 - GET: /api/categories/{id} - get specific category
 - GET: /api/categories/{id}/books - get books filtered by category
+#### Shopping Cart
 - GET: /api/cart - get current state of your shopping cart
 - POST: /api/cart - add item to your shopping cart
 - PUT: /api/cart/items/{cartItemId} - update item in your shopping cart
 - DELETE: /api/cart/items/{cartItemId} - remove item from your shopping cart
+#### Order
 - POST: /api/orders - create an order from your shopping cart
 - GET: /api/orders - get list of your orders
 - GET: /api/orders/{orderId}/items - get list of items in specific order
 - GET: /api/orders/{orderId}/items/{itemId} - get info about specific order item
-
+## Database Schema
+![db_schema.png](src/main/resources/static/DB_schema.png)
 ## Postman Collection
 In Postman, you can import .json [file](BookStore.postman_collection.json) from the root of this
 project to easily start working with all the endpoints this project has (use [api_url]() postman 
