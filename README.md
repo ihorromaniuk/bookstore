@@ -8,7 +8,7 @@ creating orders based on your shopping cart.
 ## Technology stack
 - **Java 21**
 - **Database**: Hibernate 6.6.2, MySQL 9.1.0
-- **Spring 3.4.0**: Spring Core, Spring Web, Spring Security, Spring Data
+- **SpringBoot 3.4.0**: Spring Core, Spring Web, Spring Security, Spring Data
 - **Web Development**: Tomcat 10.1.33, JSON
 - **Tools**: JUnit 5, Maven 3.9.9, Liquibase 4.29.2, Mockito 5.14.2, Test containers 1.20.4, 
 Docker 27.3.1, Swagger 2.2.25
