@@ -17,7 +17,7 @@ services:
     depends_on:
       - mysql
     restart: on-failure:1
-    image: bookstore-app
+    image: dream-books-app
     build: .
     env_file: ./.env
     ports:

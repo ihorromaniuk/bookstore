@@ -14,10 +14,11 @@ creating orders based on your shopping cart.
 Docker 27.3.1, Swagger 2.2.25
 
 ## Launch instructions
-After cloning this project on your machine the only requirement is to have running docker,
-but first you need to create .env file in the root folder of this project to specify docker ports, 
-local ports and info for database the project will be running with (database is pulled from 
-DockerHUB so there is no need for you to install it locally), example of .env file: 
+After [cloning](https://github.com/ihorromaniuk/bookstore.git) this project on your machine the 
+only requirement is to have running docker, but first you need to create .env file in the root
+folder of this project to specify docker ports, local ports and info for database the project 
+will be running with (database is pulled from DockerHUB so there is no need for you to install 
+it locally), example of .env file: 
 ```dotenv
 MYSQL_USER=mysql_user
 MYSQL_PASSWORD=mysql1234
@@ -31,15 +32,23 @@ SPRING_LOCAL_PORT=8081
 SPRING_DOCKER_PORT=8080
 DEBUG_PORT=5005
 ```
-then run this command (default docker server URI is http://localhost:8081, you can specify it 
-in recently created .env file )
+in terminal navigate to the root folder of this project and use command
+```console
+docker build . -t dream-books-app
+```
+to build docker image of this project.
+
+Then run this command to start docker containers (pulled database and app from recently
+created image) :
 ```console
 docker-compose up
 ```
-if you want to run project locally then you also need to have installed Java 21+ version 
-(database is still pulled from DockerHUB), in this case default server URI will be
-http://localhost:8080, you can specify port in 
-[application.yml](src/main/resources/application.yml) file
+default docker server URI is http://localhost:8081, you can specify it in recently created .env 
+file.
+
+If you want to run project locally then you also need to have installed Java 21+ version and 
+Maven 3.9.9+ version (database is still pulled from DockerHUB), default server URI in this case 
+is http://localhost:8080
 
 ## Functionality (endpoints)
 After you start an application, by default you will have registered admin user with credentials:
